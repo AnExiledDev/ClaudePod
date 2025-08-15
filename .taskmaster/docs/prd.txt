@@ -1,0 +1,108 @@
+# GitHub MCP Server Integration for ClaudePod DevContainer
+
+## Overview
+Integrate the GitHub MCP Server into the existing ClaudePod development container to provide AI-powered GitHub integration capabilities. This will enable Claude Code to directly interact with GitHub repositories, manage issues, pull requests, and automate workflows.
+
+## Problem Statement
+The current ClaudePod devcontainer lacks GitHub integration capabilities. Developers need seamless access to GitHub repositories, issue management, PR automation, and code analysis directly through Claude Code without manual GitHub CLI operations.
+
+## Goals
+1. **Primary Goal**: Integrate GitHub MCP Server into the devcontainer environment
+2. **Secondary Goals**: 
+   - Provide secure authentication with GitHub PAT
+   - Enable configurable GitHub toolsets
+   - Maintain container security best practices
+   - Ensure persistent configuration across container rebuilds
+
+## Target Users
+- Developers using ClaudePod for GitHub-based projects
+- AI-assisted development workflows
+- Teams requiring automated GitHub operations
+
+## Requirements
+
+### Functional Requirements
+1. **GitHub MCP Server Installation**
+   - Install and configure GitHub MCP Server in the devcontainer
+   - Support both remote and local server configurations
+   - Enable Docker-based deployment for consistency
+
+2. **Authentication & Security**
+   - Support GitHub Personal Access Token (PAT) authentication
+   - Secure environment variable management
+   - Follow security best practices for token storage
+   - Implement minimal necessary permission scopes
+
+3. **Configuration Management**
+   - Configurable GitHub toolsets (context, actions, code_security, etc.)
+   - Persistent configuration across container rebuilds
+   - Environment variable templates and examples
+   - Integration with existing MCP server configuration
+
+4. **Documentation & Examples**
+   - Clear setup instructions
+   - Environment variable configuration examples
+   - Security best practices documentation
+   - Usage examples and common workflows
+
+### Technical Requirements
+1. **Container Integration**
+   - Extend existing devcontainer configuration
+   - Maintain compatibility with current tools (Node.js, Python, etc.)
+   - Preserve existing MCP servers (Serena, DeepWiki, TaskMaster)
+   - Use persistent volumes for configuration
+
+2. **Environment Configuration**
+   - GitHub PAT environment variable setup
+   - Configurable GitHub server endpoints
+   - Support for multiple GitHub toolsets
+   - Integration with existing environment setup scripts
+
+3. **Security Requirements**
+   - Secure token storage using environment variables
+   - No hardcoded credentials
+   - Minimal permission scopes
+   - Token rotation guidelines
+
+## Success Criteria
+1. GitHub MCP Server successfully installed and configured in devcontainer
+2. Claude Code can authenticate with GitHub using PAT
+3. Basic GitHub operations working (repository access, issue management)
+4. Configuration persists across container rebuilds
+5. Security best practices implemented
+6. Documentation complete and tested
+
+## Implementation Scope
+- Update devcontainer configuration files
+- Create GitHub MCP server installation scripts
+- Add environment variable templates
+- Update documentation with GitHub integration
+- Test integration with existing MCP servers
+- Verify security implementation
+
+## Out of Scope
+- OAuth authentication implementation (PAT only for this iteration)
+- Custom GitHub webhooks or advanced integrations
+- GitHub Enterprise Server support (GitHub.com only)
+- Advanced workflow automation beyond basic MCP capabilities
+
+## Dependencies
+- Existing ClaudePod devcontainer infrastructure
+- Docker runtime environment
+- GitHub Personal Access Token from user
+- Claude Code CLI with MCP support
+
+## Risks & Mitigations
+1. **Risk**: Token security vulnerabilities
+   **Mitigation**: Use environment variables, provide clear security guidelines
+
+2. **Risk**: MCP server conflicts with existing servers
+   **Mitigation**: Test compatibility, use isolated configuration
+
+3. **Risk**: Container rebuild breaking configuration
+   **Mitigation**: Use persistent volumes, test rebuild scenarios
+
+## Timeline
+Phase 1: Setup and basic integration (1-2 days)
+Phase 2: Security hardening and testing (1 day)
+Phase 3: Documentation and examples (1 day)

@@ -1,0 +1,61 @@
+{
+  "// Comment": "Example customizations you can add to devcontainer.json",
+  
+  "// Additional environment variables": {
+    "containerEnv": {
+      "CUSTOM_VAR": "value",
+      "API_KEY": "${localEnv:YOUR_API_KEY}",
+      "NODE_ENV": "development",
+      "GITHUB_PERSONAL_ACCESS_TOKEN": "${localEnv:GITHUB_PERSONAL_ACCESS_TOKEN}",
+      "GITHUB_API_URL": "${localEnv:GITHUB_API_URL}",
+      "GITHUB_TOOLSET": "${localEnv:GITHUB_TOOLSET}"
+    }
+  },
+
+  "// Additional VS Code extensions": {
+    "customizations": {
+      "vscode": {
+        "extensions": [
+          "ms-vscode.vscode-json",
+          "redhat.vscode-yaml", 
+          "ms-vscode.vscode-typescript-next",
+          "bradlc.vscode-tailwindcss",
+          "ms-vscode.vscode-docker"
+        ]
+      }
+    }
+  },
+
+  "// Additional volume mounts": {
+    "mounts": [
+      "source=claudepod-ssh-keys,target=/home/node/.ssh,type=volume",
+      "source=claudepod-docker-config,target=/home/node/.docker,type=volume"
+    ]
+  },
+
+  "// Port forwarding": {
+    "forwardPorts": [3000, 8080, 5000],
+    "portsAttributes": {
+      "3000": {
+        "label": "Frontend Dev Server"
+      },
+      "8080": {
+        "label": "Backend API"
+      }
+    }
+  },
+
+  "// Additional lifecycle commands": {
+    "postCreateCommand": "npm install && python -m pip install --user -r requirements.txt",
+    "postStartCommand": "echo 'Container started!'",
+    "postAttachCommand": "echo 'Welcome to ClaudePod!'"
+  },
+
+  "// DevContainer features to add": {
+    "features": {
+      "ghcr.io/devcontainers/features/docker-in-docker:2": {},
+      "ghcr.io/devcontainers/features/aws-cli:1": {},
+      "ghcr.io/devcontainers/features/terraform:1": {}
+    }
+  }
+}

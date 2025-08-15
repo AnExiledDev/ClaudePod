@@ -1,0 +1,110 @@
+{
+  "name": "ClaudePod Development Environment",
+  "image": "mcr.microsoft.com/vscode/devcontainers/base:ubuntu-22.04",
+
+  "features": {
+    "ghcr.io/devcontainers/features/common-utils:2": {
+      "installZsh": true,
+      "installOhMyZsh": true,
+      "username": "node",
+      "uid": 1000,
+      "gid": 1000,
+      "upgradePackages": true
+    },
+    "ghcr.io/devcontainers/features/node:1": {
+      "nodeGypDependencies": true,
+      "version": "20"
+    },
+    "ghcr.io/devcontainers/features/python:1": {
+      "version": "3.13",
+      "installTools": true,
+      "toolsToInstall": "flake8,autopep8,black,yapf,mypy,pydocstyle,pycodestyle,bandit,pipenv,virtualenv,pytest,pylint"
+    },
+    "ghcr.io/devcontainers/features/git:1": {
+      "version": "latest",
+      "ppa": false
+    },
+    "ghcr.io/devcontainers/features/github-cli:1": {
+      "version": "latest"
+    },
+    "ghcr.io/devcontainers/features/docker-in-docker:2": {
+      "version": "latest",
+      "dockerDashComposeVersion": "v2"
+    }
+  },
+
+  "containerEnv": {
+    "CLAUDE_CONFIG_DIR": "/home/node/.claude",
+    "DEVCONTAINER": "true",
+    "TAVILY_API_KEY": "${localEnv:TAVILY_API_KEY}",
+    "REF_TOOLS_API_KEY": "${localEnv:REF_TOOLS_API_KEY}",
+    "GITHUB_PERSONAL_ACCESS_TOKEN": "${localEnv:GITHUB_PERSONAL_ACCESS_TOKEN}",
+    "GITHUB_API_URL": "${localEnv:GITHUB_API_URL}",
+    "GITHUB_TOOLSET": "${localEnv:GITHUB_TOOLSET}"
+  },
+
+  "mounts": [
+    "source=${localWorkspaceFolder}/.claude,target=/home/node/.claude,type=bind,consistency=cached",
+    "source=${localWorkspaceFolder}/.serena,target=/home/node/.serena,type=bind,consistency=cached",
+    "source=claudepod-bash-history,target=/home/node/.bash_history,type=volume",
+    "source=claudepod-zsh-history,target=/home/node/.zsh_history,type=volume",
+    "source=claudepod-npm-cache,target=/home/node/.npm,type=volume",
+    "source=claudepod-npm-config,target=/home/node/.config,type=volume",
+    "source=claudepod-npm-global,target=/home/node/.local,type=volume"
+  ],
+
+  "postCreateCommand": "sudo -E /bin/bash .devcontainer/post-create.sh",
+  "postStartCommand": "/bin/bash .devcontainer/post-start.sh",
+
+  "forwardPorts": [],
+  "portsAttributes": {
+    "*": {
+      "onAutoForward": "openBrowserOnce"
+    }
+  },
+  "otherPortsAttributes": {
+    "onAutoForward": "openBrowser"
+  },
+
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "ms-vscode-remote.remote-containers",
+        "ms-vscode-remote.remote-ssh",
+        "ms-vscode-remote.remote-ssh-edit",
+        "ms-vscode.remote-explorer",
+        "ms-vscode-remote.vscode-remote-extensionpack",
+        "ms-python.python",
+        "ms-python.vscode-pylance",
+        "dbaeumer.vscode-eslint",
+        "esbenp.prettier-vscode",
+        "GitHub.vscode-pull-request-github",
+        "eamodio.gitlens"
+      ],
+      "settings": {
+        "remote.SSH.defaultExtensions": [
+          "ms-vscode-remote.remote-ssh-edit"
+        ],
+        "terminal.integrated.defaultProfile.linux": "zsh",
+        "terminal.integrated.profiles.linux": {
+          "zsh": {
+            "path": "/usr/bin/zsh",
+            "args": ["-l"]
+          }
+        },
+        "terminal.integrated.shell.linux": "/usr/bin/zsh",
+        "terminal.integrated.shellArgs.linux": ["-l"],
+        "terminal.integrated.fontFamily": "MesloLGS NF, 'Courier New', monospace",
+        "terminal.integrated.fontSize": 14
+      }
+    }
+  },
+
+  "remoteUser": "node",
+  "containerUser": "node",
+
+  "workspaceFolder": "/workspace",
+  "workspaceMount": "source=${localWorkspaceFolder},target=/workspace,type=bind,consistency=cached",
+  
+  "postAttachCommand": "sudo chown -R node:node /workspace"
+}

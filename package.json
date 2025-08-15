@@ -1,0 +1,39 @@
+{
+  "name": "claudepod",
+  "version": "1.0.2",
+  "description": "A fully configured DevPod environment optimized for Claude Code development with MCP servers and modern tools.",
+  "main": "setup.js",
+  "bin": {
+    "claudepod-setup": "./setup.js"
+  },
+  "scripts": {
+    "test": "node test.js"
+  },
+  "keywords": [
+    "devcontainer",
+    "claude",
+    "claude-code",
+    "mcp",
+    "development-environment",
+    "devpod",
+    "vscode"
+  ],
+  "author": "AnExiledDev",
+  "license": "MIT",
+  "files": [
+    ".devcontainer/**/*",
+    "setup.js",
+    "README.md"
+  ],
+  "engines": {
+    "node": ">=14.0.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/AnExiledDev/ClaudePod.git"
+  },
+  "homepage": "https://github.com/AnExiledDev/ClaudePod#readme",
+  "bugs": {
+    "url": "https://github.com/AnExiledDev/ClaudePod/issues"
+  }
+}

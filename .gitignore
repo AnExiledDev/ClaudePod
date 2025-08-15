@@ -1,0 +1,77 @@
+# ClaudePod Git Ignore
+
+# Environment files with API keys
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# DevContainer build cache
+.devcontainer/.dockercache/
+
+# IDE files
+.vscode/settings.json
+*.swp
+*.swo
+*~
+
+# Temporary files
+*.tmp
+*.temp
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Runtime data
+pids
+*.pid
+*.seed
+*.pid.lock
+
+# Coverage directory used by tools like istanbul
+coverage/
+*.lcov
+
+# nyc test coverage
+.nyc_output
+
+logs
+dev-debug.log
+# Dependency directories
+node_modules/
+# Environment variables
+# Editor directories and files
+.idea
+.vscode
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+# OS specific
+
+# Claude Code runtime data (user-specific)
+.claude/.claude.json*
+.claude/.credentials.json
+.claude/projects/
+.claude/shell-snapshots/
+.claude/statsig/
+.claude/todos/
+.claude/ide/
+
+# Claude Code configuration folders (keep these)
+!.claude/commands/
+!.claude/agents/
+!.claude/hooks/
+
+# Serena runtime data (auto-generated only)
+.serena/language_servers/
+
+# Development documentation (not for distribution)
+UPDATE_SUMMARY.md
