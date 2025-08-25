@@ -1,0 +1,42 @@
+# Files to exclude from npm package
+
+# Development and testing
+test.js
+.devcontainer/state/
+.devcontainer/config/backups/
+
+# Documentation that's not needed in package
+analysis.md
+searxng-implementation.md
+docs/
+
+# Git and development
+.git/
+.github/
+.gitignore
+
+# IDE and editor files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS specific
+.DS_Store
+Thumbs.db
+
+# Temporary files
+*.tmp
+*.temp
+
+# Logs
+*.log
+
+# Environment files (never publish)
+.env
+.env.*
+
+# Local development
+.claude-trace/
+aeris-memory/

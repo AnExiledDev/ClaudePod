@@ -1,0 +1,71 @@
+# SearXNG MCP Enhanced - Environment Variables Template
+# These variables override values in ods_config.json when set
+# Configuration Priority: Script defaults → JSON file → Environment variables (highest)
+
+# ============================================================================
+# Core Configuration
+# ============================================================================
+
+# SearXNG Instance Configuration
+SEARXNG_ENGINE_API_BASE_URL=http://localhost:8080/search
+
+# Timezone Configuration
+DESIRED_TIMEZONE=UTC
+
+# Configuration Management
+ODS_CONFIG_PATH=/home/node/.claude/ods_config.json
+
+# ============================================================================
+# Search & Scraping Settings
+# ============================================================================
+
+# Number of web pages to scrape for content extraction
+RETURNED_SCRAPPED_PAGES_NO=3
+
+# Maximum number of search results to return
+MAX_SEARCH_RESULTS=10
+
+# Timeout settings (in seconds)
+SCRAPING_TIMEOUT_SECONDS=30
+SEARCH_TIMEOUT_SECONDS=15
+
+# Default search categories (comma-separated)
+# Available: general,images,videos,files,map,social media  
+DEFAULT_SEARCH_CATEGORIES=general
+
+# Language settings
+SEARCH_LANGUAGE=en-US
+FALLBACK_LANGUAGE=en
+
+# ============================================================================
+# Performance & Caching
+# ============================================================================
+
+# Cache settings
+CACHE_MAXSIZE=1000
+
+# Rate limiting (requests per minute)
+RATE_LIMIT_REQUESTS_PER_MINUTE=60
+
+# User agent for web requests
+USER_AGENT=ClaudePod/1.0 MCP-SearXNG-Enhanced
+
+# ============================================================================
+# Feature Toggles
+# ============================================================================
+
+# Enable/disable content scraping
+ENABLE_CONTENT_SCRAPING=true
+
+# Enable/disable PDF reading capabilities
+ENABLE_PDF_READING=true
+
+# ============================================================================
+# Debug & Development
+# ============================================================================
+
+# Enable debug logging (optional)
+# SEARXNG_DEBUG=false
+
+# Custom SearXNG instance for testing (optional)
+# CUSTOM_SEARXNG_URL=http://localhost:8080/search

@@ -56,22 +56,14 @@ node_modules/
 *.sw?
 # OS specific
 
-# Claude Code runtime data (user-specific)
-.claude/.claude.json*
-.claude/.credentials.json
-.claude/projects/
-.claude/shell-snapshots/
-.claude/statsig/
-.claude/todos/
-.claude/ide/
+# Claude Code directory (user-specific)
+.claude/
 
-# Claude Code configuration folders (keep these)
-!.claude/commands/
-!.claude/agents/
-!.claude/hooks/
-
-# Serena runtime data (auto-generated only)
-.serena/language_servers/
-
-# Development documentation (not for distribution)
-UPDATE_SUMMARY.md
+# All hidden directories except devcontainer
+.*
+!.devcontainer/
+!.git/
+!.gitignore
+!.gitattributes
+!.npmignore
+.devcontainer/config/claude/output-styles/strict-development.md

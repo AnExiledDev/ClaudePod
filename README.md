@@ -1,160 +1,171 @@
-# ClaudePod DevContainer Package
+# ClaudePod
 
-A fully configured DevContainer optimized for Claude Code development with MCP servers, modern development tools, and persistent configuration. Easily add this development environment to any project with one command.
+A complete development container that sets up Claude Code with 8 powerful MCP servers, modern dev tools, and persistent configurations. Drop it into any project and get a production-ready AI development environment in minutes.
 
-## 🚀 Quick Setup
+## What's Inside
+
+**Claude Code CLI** with native binary installation and optimized configuration  
+**8 MCP Servers** providing 100+ specialized tools for code analysis, documentation search, task management, and more  
+**Modern Stack** - Node.js 20, Python 3.13, Git with delta, GitHub CLI  
+**Smart Persistence** - Your Claude config, shell history, and npm cache survive container rebuilds  
+**Enhanced Terminal** - Powerlevel10k with quiet mode and useful git aliases  
+
+## Quick Start
+
+### Using NPM Package
+
+ClaudePod is available as an npm package at [npmjs.com/package/claudepod](https://www.npmjs.com/package/claudepod):
 
 ```bash
-# Install in any project directory
+# Drop into any project
+cd your-project
 npx claudepod-devcontainer
 
-# Start the container
+# Fire it up
 devpod up .
-
-# Connect with VS Code
-devpod ssh <workspace-name> --ide vscode
+devpod ssh <workspace-name> --ide vscode  # <workspace-name> is usually your project folder name
 
 # Start coding with Claude
 claude
 ```
 
-## ✨ What You Get
+### Cloning from Repository
 
-### 🛠️ Development Stack
-- **Node.js 20** (via NVM) + npm/npx
-- **Python 3.13** with pipx, uv/uvx, and common tools  
-- **Git** with git-delta for beautiful diffs
-- **GitHub CLI** for repository operations
-- **Claude Code CLI** with optimized tool configuration
+```bash
+# Clone the repository
+git clone https://github.com/AnExiledDev/ClaudePod.git
+cd ClaudePod
 
-### 🔌 MCP Servers (Pre-configured)
+# Copy .devcontainer to your project
+cp -r .devcontainer /path/to/your-project/
+cd /path/to/your-project
+
+# Fire it up
+devpod up .
+devpod ssh <workspace-name> --ide vscode  # <workspace-name> is usually your project folder name
+
+# Start coding with Claude
+claude
+```
+
+That's it. No configuration files to edit, no API keys to hunt down. Everything works out of the box.
+
+## The MCP Servers
+
+ClaudePod ships with 8 MCP servers that turn Claude into a powerhouse:
+
 - **Serena** - Advanced code analysis and semantic search
 - **DeepWiki** - GitHub repository documentation search  
 - **TaskMaster AI** - AI-powered project management
-- **Sequential Thinking** - Structured problem-solving
-- **GitHub MCP** - Complete GitHub API integration (requires API key)
-- **Tavily Search** - Web search capabilities (requires API key)
-- **Ref.Tools** - Documentation tools (requires API key)
+- **Sequential Thinking** - Structured problem-solving workflows
+- **ccusage** - Claude Code usage analytics and cost tracking
+- **SearXNG Enhanced** - Web search with content scraping
+- **GitHub MCP** - Complete GitHub API integration (API key required)
+- **Tavily + Ref.Tools** - Web search and documentation tools (API keys required)
 
-### ⚡ Productivity Features
-- **Optimized tool configuration** - 79 essential tools pre-allowed (51% reduction from 161 total)
-- **Zero permission prompts** for common development workflows
-- **Intelligent tool selection** - Prioritizes powerful MCP tools over basic built-ins
-- **Shell aliases** - `gs`, `gd`, `gc`, `gp`, `gl` for git operations
-- **Persistent storage** - Claude config and shell history survive rebuilds
-- **VS Code extensions** - Pre-configured for remote development
+**Tool Permissions**: When Claude first starts, it will ask permission to use these MCP tools. You can deny or allow specific tools based on your needs - this helps manage the large number of available tools (100+). Future versions will make this easier to configure.
 
-## 📋 Requirements
+## Requirements
 
-1. **DevPod** installed and configured
-2. **VS Code** with Remote Development Extension Pack:
-   ```bash
-   code --install-extension ms-vscode-remote.vscode-remote-extensionpack
-   ```
+- **[DevPod](https://devpod.sh/)** installed and configured - the container development platform
+- **VS Code** with Remote Development extensions
+- That's literally it
 
-## 🔧 Usage
+## Container Details
 
-### Install in Existing Project
+**Base**: Ubuntu 22.04  
+**User**: node (1000:1000)  
+**Workspace**: `/workspace` (your project files)  
+**Persistent**: Claude config, shell history, npm cache  
+
+Your files stay exactly where they are. ClaudePod only adds a `.devcontainer/` directory.
+
+## Handy Commands
+
 ```bash
-cd my-existing-project
-npx claudepod-devcontainer
-devpod up .
+# Claude with statusline and MCP servers
+claude
+
+# Git shortcuts (with beautiful diffs)
+gs    # git status
+gd    # git diff
+gc    # git commit
+gp    # git push
+gl    # git log --oneline --graph
+
+# Python without the pain
+uvx <package>     # Run packages without installing
+uv add <package>  # Add dependencies  
+
+# Quick info
+claudepod_info    # Show status and commands
 ```
 
-### New Project Setup
-```bash
-mkdir new-project && cd new-project
-npx claudepod-devcontainer
-devpod up .
-```
+## Optional Upgrades
 
-### First-Time Container Setup
-```bash
-# Inside the container
-./scripts/setup-env.sh  # Optional environment setup
-claude login           # Authenticate with Claude
-claude                 # Start development
-```
-
-## 🎯 Quick Commands
+**Web search is already included** via the built-in SearXNG server - no limits, no API keys required. But you can add more integrations:
 
 ```bash
-# Claude Code (with MCP servers, no permission prompts)
-claude                    # Start Claude 
-claude mcp list          # List available MCP servers
-
-# Git (with aliases and delta highlighting)
-gs                       # git status
-gd                       # git diff 
-gc -m "message"          # git commit
-gp                       # git push
-gl                       # git log --oneline --graph
-
-# Python development
-uvx <package>            # Run packages without installing
-uv add <package>         # Add dependencies
-
-# Health check
-./scripts/health-check.sh # Verify everything works
-```
-
-## 🔑 Optional API Keys
-
-Add these to `.devcontainer/.env` for enhanced features:
-
-```bash
-# Copy template and add your keys
 cp .devcontainer/.env.example .devcontainer/.env
-# Edit .devcontainer/.env with your API keys
+# Edit .devcontainer/.env with your keys
+```
 
+```bash
 # GitHub integration (recommended)
 GITHUB_PERSONAL_ACCESS_TOKEN=ghp_your_token
 
-# Web search capabilities  
+# Additional web search via Tavily (optional - SearXNG already provides unlimited search)
 TAVILY_API_KEY=tvly-your-key
 
 # Documentation tools
 REF_TOOLS_API_KEY=your-key
 ```
 
-## 📋 Template Configuration System
+## Customization & Pitfalls
 
-ClaudePod includes optimized configurations that work out of the box:
+### The Good News
+ClaudePod is designed to be unbreakable. It uses smart configuration templates that preserve your customizations across container rebuilds.
 
-### **Pre-configured Components**
-- **Claude settings** - 85 essential tools allowed, zero permission prompts
-- **MCP servers** - All 8 servers defined with environment variable support  
-- **Serena config** - Optimized for container environment
-- **TaskMaster config** - Claude Code integration enabled
-- **Enhanced claude alias** - Auto-loads MCP config and system prompt
+### System Prompt Customization
 
-### **Smart Management**
-- Templates in `.devcontainer/config/` copied on first run
-- Existing configurations preserved across container rebuilds
-- Environment variables automatically sourced from `.devcontainer/.env`
+**Custom System Prompts** - ClaudePod includes a system prompt file that gets automatically loaded into Claude Code:
 
-## 📁 What Gets Installed
-
-```
-your-project/
-├── .devcontainer/
-│   ├── devcontainer.json    # Container configuration
-│   ├── post-create.sh       # Development tools setup  
-│   └── post-start.sh        # MCP server installation
-└── (your existing files remain unchanged)
+```bash
+# Edit the system prompt file
+.devcontainer/config/claude/system-prompt.md
 ```
 
-## 🏗️ Container Architecture
+This file allows you to add project-specific instructions, coding standards, or context that Claude should remember throughout your sessions. Changes are automatically applied when the container starts.
 
-- **Base**: Ubuntu 22.04
-- **User**: `node` (uid: 1000, gid: 1000)
-- **Workspace**: `/workspace` (your project files)
-- **Persistent Data**: Claude config, shell history, npm cache
-- **Network**: Host network for optimal development server performance
+**Output Styles** - Claude Code's output styles can be paired with your custom system prompt for even more specialized behavior:
 
-## 🔧 Customization
+```bash
+# Create custom output styles in Claude Code
+/output-style:new I want an output style that focuses on performance optimization
+```
 
-After installation, you can modify `.devcontainer/devcontainer.json`:
+Output styles modify Claude's system prompt to change how it responds - perfect for specialized workflows like code reviews, documentation writing, or educational contexts.
+
+### Common Gotchas
+
+**Override Flags** - ClaudePod has environment variables like `OVERRIDE_CLAUDE_SETTINGS=true` that can overwrite your customizations. Only use these if you want to reset to defaults.
+
+**Port Conflicts** - If you run services on ports 8080, 3000, or 5000 locally, add port forwarding rules to avoid conflicts:
+
+```json
+{
+  "forwardPorts": [3001, 8081, 5001],
+  "portsAttributes": {
+    "3001": { "label": "Your App" }
+  }
+}
+```
+
+**Configuration Complexity** - ClaudePod has many layers (devcontainer.json, .env, MCP templates, tool configs). Stick to editing `.devcontainer/.env` for most customizations.
+
+### Safe Customization
+
+Edit `.devcontainer/devcontainer.json` after installation:
 
 ```json
 {
@@ -165,45 +176,89 @@ After installation, you can modify `.devcontainer/devcontainer.json`:
     "vscode": {
       "extensions": ["your.extension.id"]
     }
+  },
+  "features": {
+    "ghcr.io/devcontainers/features/aws-cli:1": {}
   }
 }
 ```
 
-## 🩺 Troubleshooting
+## Troubleshooting
 
+**Container won't start?**
 ```bash
-# Container not starting?
-devpod delete <workspace> && devpod up .
+devpod delete <workspace> && devpod up .  # <workspace> is your project folder name
+# Don't worry - this preserves your ClaudePod configuration and project files
+```
 
-# Claude not authenticated?
+**Claude authentication issues?**
+```bash
 claude login
-
-# MCP servers not working?
-claude mcp list
-claude mcp remove <server> && claude mcp add <server>
-
-# Check container health
-./scripts/health-check.sh
 ```
 
-## 📚 Documentation
-
-After installation, see:
-- `CLAUDE.md` - Complete container documentation
-- `examples/` - Configuration examples
-- `scripts/` - Helper scripts and utilities
-
-## 🤝 Team Usage
-
-Each team member runs:
+**MCP servers missing?**
 ```bash
-cd shared-project
-npx claudepod-devcontainer  # Installs .devcontainer
-devpod up .                 # Starts identical environment
+claude mcp list
+# If empty, restart the container
 ```
 
-Perfect for ensuring consistent development environments across your team!
+**npm permission errors?**
+```bash
+# Inside container - fix npm permissions
+sudo chown -R node:node /home/node/.npm
+sudo chown -R node:node /home/node/.local
+```
+
+**Configuration got overwritten?**
+Look in `.devcontainer/config/backups/` - ClaudePod automatically backs up your configs before making changes.
+
+## Architecture
+
+ClaudePod uses a two-phase setup:
+1. **post-create.sh** - Installs Claude Code, dev tools, and creates base configurations
+2. **post-start.sh** - Installs MCP servers and validates everything works
+
+The setup is idempotent - you can rebuild containers without losing your customizations (unless you use override flags).
+
+## Team Usage
+
+Perfect for teams who want consistent environments:
+
+```bash
+# Team member 1 sets up the project
+cd shared-project
+npx claudepod-devcontainer
+git add .devcontainer/ && git commit -m "Add ClaudePod"
+
+# Everyone else just runs
+devpod up .
+```
+
+Each developer gets an identical environment with the same Claude configuration, MCP servers, and tools.
+
+## What Gets Added
+
+```
+your-project/
+├── .devcontainer/
+│   ├── devcontainer.json           # Main container config
+│   ├── post-create.sh             # Tool installation
+│   ├── post-start.sh              # MCP server setup
+│   ├── .env.example               # API key template
+│   ├── config/
+│   │   ├── claude/                # Claude Code templates
+│   │   ├── serena/                # Serena config
+│   │   └── taskmaster/            # TaskMaster config
+│   └── scripts/                   # Modular setup scripts
+└── (your files stay exactly the same)
+```
+
+## License
+
+This project is licensed under the GNU General Public License v3.0 (GPL-3.0). See the [full license text](https://www.gnu.org/licenses/gpl-3.0.txt) for details.
+
+The GPL-3.0 is a copyleft license that ensures this software remains free and open source, requiring any modifications or derivative works to be released under the same license terms.
 
 ---
 
-**Ready to supercharge your development with AI!** 🚀
+**Ready to code with AI superpowers?** ClaudePod turns any project into an AI-native development environment.

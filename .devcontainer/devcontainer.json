@@ -40,7 +40,9 @@
     "REF_TOOLS_API_KEY": "${localEnv:REF_TOOLS_API_KEY}",
     "GITHUB_PERSONAL_ACCESS_TOKEN": "${localEnv:GITHUB_PERSONAL_ACCESS_TOKEN}",
     "GITHUB_API_URL": "${localEnv:GITHUB_API_URL}",
-    "GITHUB_TOOLSET": "${localEnv:GITHUB_TOOLSET}"
+    "GITHUB_TOOLSET": "${localEnv:GITHUB_TOOLSET}",
+    "ENABLE_SEARXNG_LOCAL": "${localEnv:ENABLE_SEARXNG_LOCAL:-true}",
+    "SEARXNG_LOCAL_INSTALL_DIR": "/opt/searxng-local"
   },
 
   "mounts": [
@@ -50,7 +52,8 @@
     "source=claudepod-zsh-history,target=/home/node/.zsh_history,type=volume",
     "source=claudepod-npm-cache,target=/home/node/.npm,type=volume",
     "source=claudepod-npm-config,target=/home/node/.config,type=volume",
-    "source=claudepod-npm-global,target=/home/node/.local,type=volume"
+    "source=claudepod-npm-global,target=/home/node/.local,type=volume",
+    "source=claudepod-searxng-local,target=/opt/searxng-local,type=volume"
   ],
 
   "postCreateCommand": "sudo -E /bin/bash .devcontainer/post-create.sh",

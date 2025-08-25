@@ -8,26 +8,8 @@ echo "🚀 Starting ClaudePod MCP server setup..."
 
 # Initial NVM setup will be handled in main() to avoid conflicts
 
-# Retry function for resilient installations
-retry_command() {
-    local max_attempts=${1:-3}
-    local delay=${2:-5}
-    shift 2
-    local attempt=1
-    
-    while [ $attempt -le $max_attempts ]; do
-        if "$@"; then
-            return 0
-        fi
-        echo "⚠️  Command failed (attempt $attempt/$max_attempts): $*"
-        if [ $attempt -lt $max_attempts ]; then
-            echo "   Retrying in ${delay}s..."
-            sleep $delay
-        fi
-        ((attempt++))
-    done
-    return 1
-}
+# Source shared utility functions
+source "/workspace/.devcontainer/scripts/utils.sh"
 
 # Function to install uv via pipx
 install_uv() {
@@ -82,177 +64,284 @@ install_uv() {
     fi
 }
 
-# Function to clean up existing MCP servers
-cleanup_mcp_servers() {
-    echo "🧹 Cleaning up existing MCP server configurations..."
+# Function to validate MCP configuration
+validate_mcp_configuration() {
+    echo "🔍 Validating MCP configuration..."
     
-    # Get list of existing servers
-    local existing_servers=$(claude mcp list 2>/dev/null | grep -E "^(serena|deepwiki|tavily-search|ref-tools|taskmaster-ai|sequential-thinking):" | cut -d: -f1 || true)
+    local mcp_config="/workspace/.devcontainer/config/claude/mcp.json"
     
-    if [ -n "$existing_servers" ]; then
-        echo "$existing_servers" | while read -r server; do
-            if [ -n "$server" ]; then
-                echo "   Removing $server..."
-                claude mcp remove "$server" 2>/dev/null || true
+    # Check if file exists
+    if [ ! -f "$mcp_config" ]; then
+        echo "⚠️  MCP configuration file not found at $mcp_config"
+        return 1
+    fi
+    
+    # Basic JSON validation
+    if ! node -e "JSON.parse(require('fs').readFileSync('$mcp_config', 'utf8'))" 2>/dev/null; then
+        echo "❌ MCP configuration is not valid JSON"
+        # Restore from backup if available
+        if [ -f "${mcp_config}.backup" ]; then
+            echo "📦 Restoring from backup..."
+            cp "${mcp_config}.backup" "$mcp_config"
+        fi
+        return 1
+    fi
+    
+    # Test if Claude can read the configuration (if Claude is available)
+    if command -v claude &> /dev/null; then
+        echo "🧪 Testing Claude MCP integration..."
+        if timeout 10 claude --mcp-config "$mcp_config" --print "test" &>/dev/null; then
+            echo "✅ Claude MCP configuration valid"
+        else
+            echo "⚠️  Claude cannot load MCP configuration (authentication may be needed)"
+        fi
+    fi
+    
+    echo "✅ MCP configuration validation completed"
+    return 0
+}
+
+# Function to verify MCP configuration
+verify_mcp_config() {
+    echo "📦 Verifying MCP server configuration..."
+    
+    # Check if MCP configuration file exists
+    local mcp_config="/workspace/.claude/mcp.json"
+    if [ ! -f "$mcp_config" ]; then
+        echo "⚠️  MCP configuration file not found at $mcp_config"
+        echo "   This should have been copied during post-create phase"
+        return 1
+    fi
+    
+    echo "✅ MCP configuration file found"
+    
+    # Verify Docker is available for GitHub MCP server
+    if [ -n "$GITHUB_PERSONAL_ACCESS_TOKEN" ] && command -v docker &> /dev/null; then
+        echo "🐳 Pre-pulling GitHub MCP server Docker image..."
+        if docker pull ghcr.io/github/github-mcp-server:latest; then
+            echo "✅ GitHub MCP server image ready"
+        else
+            echo "⚠️  Failed to pull GitHub MCP server Docker image"
+        fi
+    fi
+    
+    # Verify and setup SearXNG MCP server files when enabled (including container rebuilds)
+    if [ "${ENABLE_SEARXNG_ENHANCED_MCP:-true}" = "true" ]; then
+        echo "🔍 Verifying SearXNG MCP server installation..."
+        local searxng_server="/usr/local/mcp-servers/searxng/mcp_server.py"
+        local searxng_config="/home/node/.claude/ods_config.json"
+        local config_template="/workspace/.devcontainer/config/searxng/ods_config.json"
+        
+        if [ -f "$searxng_server" ]; then
+            echo "✅ SearXNG MCP server files found"
+            
+            # Handle configuration during container rebuilds with existence check
+            if [ -f "$searxng_config" ]; then
+                echo "✅ SearXNG configuration file ready"
+            else
+                echo "📋 SearXNG configuration not found, copying from template..."
+                
+                # Source searxng script to get setup functions
+                if [ -f "/workspace/.devcontainer/scripts/config/searxng.sh" ]; then
+                    source "/workspace/.devcontainer/scripts/config/searxng.sh"
+                    
+                    # Call configuration setup function
+                    setup_searxng_config || {
+                        echo "⚠️  Failed to setup SearXNG configuration during container rebuild"
+                        echo "   You can manually copy with: cp $config_template $searxng_config"
+                    }
+                else
+                    echo "⚠️  SearXNG setup script not found, performing basic copy..."
+                    
+                    # Ensure Claude directory exists
+                    mkdir -p "/home/node/.claude"
+                    
+                    # Copy configuration file if template exists
+                    if [ -f "$config_template" ]; then
+                        cp "$config_template" "$searxng_config"
+                        chown node:node "$searxng_config"
+                        chmod 600 "$searxng_config"
+                        echo "📋 SearXNG configuration copied from template"
+                    else
+                        echo "⚠️  SearXNG configuration template not found at $config_template"
+                    fi
+                fi
             fi
-        done
-        echo "✅ Cleanup complete"
+        else
+            echo "❌ SearXNG MCP server not found at $searxng_server"
+            echo "   Installation may have failed during post-create phase"
+            echo "   Try running: bash /workspace/.devcontainer/scripts/config/searxng.sh"
+        fi
+    fi
+    
+    return 0
+}
+
+# Function to validate environment variables and provide feedback
+validate_environment_variables() {
+    echo "🔍 Validating environment configuration..."
+    
+    local missing_keys=()
+    local optional_keys=()
+    
+    # Check optional API keys and track status
+    if [ "${ENABLE_TAVILY_MCP:-false}" = "true" ]; then
+        if [ -z "$TAVILY_API_KEY" ]; then
+            missing_keys+=("TAVILY_API_KEY")
+        fi
+    fi
+    
+    if [ "${ENABLE_REF_TOOLS_MCP:-false}" = "true" ]; then
+        if [ -z "$REF_TOOLS_API_KEY" ]; then
+            missing_keys+=("REF_TOOLS_API_KEY")
+        fi
+    fi
+    
+    if [ "${ENABLE_GITHUB_MCP:-false}" = "true" ]; then
+        if [ -z "$GITHUB_PERSONAL_ACCESS_TOKEN" ]; then
+            missing_keys+=("GITHUB_PERSONAL_ACCESS_TOKEN")
+        fi
+    fi
+    
+    # Report validation results
+    if [ ${#missing_keys[@]} -eq 0 ]; then
+        echo "✅ All required environment variables configured"
     else
-        echo "✅ No existing servers to clean up"
+        echo "⚠️  Missing API keys for enabled services:"
+        for key in "${missing_keys[@]}"; do
+            echo "   • $key"
+        done
+        echo "   📝 Add missing keys to .devcontainer/.env or disable services"
     fi
 }
 
-# Function to install MCP servers
-install_mcp_servers() {
-    echo "📦 Installing core MCP servers..."
-    
-    local servers_installed=0
-    local servers_failed=0
-    
-    # Install Serena MCP server
+# Function to display startup status summary
+display_startup_status() {
     echo ""
-    echo "🔧 Installing Serena MCP server..."
-    if retry_command 2 3 claude mcp add serena -- uvx --from git+https://github.com/oraios/serena serena start-mcp-server --context ide-assistant --project /workspace --enable-web-dashboard false; then
-        echo "✅ Serena MCP server installed"
-        ((servers_installed++))
-    else
-        echo "⚠️  Serena MCP server installation failed"
-        ((servers_failed++))
-    fi
+    echo "╔════════════════════════════════════════════════════════════════╗"
+    echo "║ 📊 ClaudePod Status Summary                                    ║"
+    echo "╚════════════════════════════════════════════════════════════════╝"
     
-    # Install DeepWiki HTTP MCP server
+    # Core tools status
     echo ""
-    echo "🔧 Installing DeepWiki MCP server..."
-    if retry_command 2 3 claude mcp add --transport http deepwiki https://mcp.deepwiki.com/mcp; then
-        echo "✅ DeepWiki MCP server installed"
-        ((servers_installed++))
-    else
-        echo "⚠️  DeepWiki MCP server installation failed"
-        ((servers_failed++))
-    fi
+    echo "🛠️  Core Tools:"
+    local claude_version=$(claude --version 2>/dev/null || echo "Not available")
+    echo "   Claude Code: $claude_version"
     
-    # Install Tavily Search MCP server (if API key provided)
-    if [ -n "$TAVILY_API_KEY" ]; then
-        echo ""
-        echo "🔧 Installing Tavily Search MCP server..."
-        if retry_command 2 3 claude mcp add --transport http tavily-search "https://mcp.tavily.com/mcp/?tavilyApiKey=$TAVILY_API_KEY"; then
-            echo "✅ Tavily Search MCP server installed"
-            ((servers_installed++))
-        else
-            echo "⚠️  Tavily Search MCP server installation failed"
-            ((servers_failed++))
-        fi
-    else
-        echo ""
-        echo "ℹ️  Skipping Tavily Search MCP server (no TAVILY_API_KEY set)"
-    fi
+    local ccusage_version=$(ccusage --version 2>/dev/null || echo "Not available")
+    echo "   ccusage: $ccusage_version"
     
-    # Install Ref.Tools MCP server (if API key provided)
-    if [ -n "$REF_TOOLS_API_KEY" ]; then
-        echo ""
-        echo "🔧 Installing Ref.Tools MCP server..."
-        if retry_command 2 3 claude mcp add --transport http ref-tools "https://api.ref.tools/mcp?apiKey=$REF_TOOLS_API_KEY"; then
-            echo "✅ Ref.Tools MCP server installed"
-            ((servers_installed++))
-        else
-            echo "⚠️  Ref.Tools MCP server installation failed"
-            ((servers_failed++))
-        fi
-    else
-        echo ""
-        echo "ℹ️  Skipping Ref.Tools MCP server (no REF_TOOLS_API_KEY set)"
-    fi
-    
-    # Install Task Master MCP server (no API key required for Claude Code)
-    echo ""
-    echo "🔧 Installing Task Master MCP server..."
-    if retry_command 2 3 claude mcp add taskmaster-ai -- npx -y --package=task-master-ai task-master-ai; then
-        echo "✅ Task Master MCP server installed"
-        ((servers_installed++))
-    else
-        echo "⚠️  Task Master MCP server installation failed"
-        ((servers_failed++))
-    fi
-    
-    # Install Sequential Thinking MCP server (no API key required)
-    echo ""
-    echo "🔧 Installing Sequential Thinking MCP server..."
-    if retry_command 2 3 claude mcp add sequential-thinking -- uvx --from git+https://github.com/arben-adm/mcp-sequential-thinking.git --with portalocker mcp-sequential-thinking; then
-        echo "✅ Sequential Thinking MCP server installed"
-        ((servers_installed++))
-    else
-        echo "⚠️  Sequential Thinking MCP server installation failed"
-        ((servers_failed++))
-    fi
-    
-    # Install ccusage MCP server (no API key required)
-    echo ""
-    echo "🔧 Installing ccusage MCP server..."
-    if retry_command 2 3 claude mcp add ccusage -- ccusage mcp; then
-        echo "✅ ccusage MCP server installed"
-        ((servers_installed++))
-    else
-        echo "⚠️  ccusage MCP server installation failed"
-        ((servers_failed++))
-    fi
-    
-    # Install GitHub MCP server (if GitHub PAT is provided and Docker is available)
-    if [ -n "$GITHUB_PERSONAL_ACCESS_TOKEN" ] && command -v docker &> /dev/null; then
-        echo ""
-        echo "🔧 Installing GitHub MCP server..."
-        # Pull the Docker image first to ensure it's available
-        if docker pull ghcr.io/github/github-mcp-server:latest; then
-            # Install using the complete Docker command
-            if retry_command 2 3 claude mcp add github -- docker run --rm -i \
-                -e GITHUB_PERSONAL_ACCESS_TOKEN="$GITHUB_PERSONAL_ACCESS_TOKEN" \
-                ${GITHUB_API_URL:+-e GITHUB_API_URL="$GITHUB_API_URL"} \
-                ${GITHUB_TOOLSET:+-e GITHUB_TOOLSET="$GITHUB_TOOLSET"} \
-                ghcr.io/github/github-mcp-server:latest; then
-                echo "✅ GitHub MCP server installed"
-                ((servers_installed++))
-            else
-                echo "⚠️  GitHub MCP server installation failed"
-                ((servers_failed++))
+    # Check Node.js with proper environment sourcing
+    local node_version="Not available"
+    if command -v node &>/dev/null; then
+        node_version=$(node --version 2>/dev/null || echo "Not available")
+    elif [ -s "/usr/local/share/nvm/nvm.sh" ]; then
+        # Try sourcing NVM if Node.js not found in PATH (permissions should now be fixed)
+        if source "/usr/local/share/nvm/nvm.sh"; then
+            if command -v node &>/dev/null; then
+                node_version=$(node --version 2>/dev/null || echo "Not available")
             fi
         else
-            echo "⚠️  Failed to pull GitHub MCP server Docker image"
-            ((servers_failed++))
-        fi
-    else
-        echo ""
-        if [ -z "$GITHUB_PERSONAL_ACCESS_TOKEN" ]; then
-            echo "ℹ️  Skipping GitHub MCP server (no GITHUB_PERSONAL_ACCESS_TOKEN set)"
-        elif ! command -v docker &> /dev/null; then
-            echo "ℹ️  Skipping GitHub MCP server (Docker not available)"
+            node_version="NVM sourcing failed"
         fi
     fi
+    echo "   Node.js: $node_version"
     
+    local uvx_status=$(command -v uvx &>/dev/null && echo "Available" || echo "Not available")
+    echo "   uvx: $uvx_status"
+    
+    # MCP servers status
+    echo ""
+    echo "🔌 MCP Servers:"
+    local enabled_count=0
+    local disabled_count=0
+    
+    # Core servers (enabled by default)
+    # for server in "serena:ENABLE_SERENA_MCP:semantic code analysis" \
+    #               "deepwiki:ENABLE_DEEPWIKI_MCP:documentation search" \
+    #               "taskmaster:ENABLE_TASKMASTER_MCP:project management" \
+    #               "sequential-thinking:ENABLE_SEQUENTIAL_THINKING_MCP:structured analysis" \
+    #               "ccusage:ENABLE_CCUSAGE_MCP:usage analytics"; do
+    #     IFS=':' read -r name var desc <<< "$server"
+    #     if [ "${!var:-true}" = "true" ]; then
+    #         echo "   ✅ $name ($desc)"
+    #         ((enabled_count++))
+    #     else
+    #         echo "   ❌ $name (disabled)"
+    #         ((disabled_count++))
+    #     fi
+    # done
+    
+    # Optional servers (require API keys)
+    # for server in "tavily:ENABLE_TAVILY_MCP:TAVILY_API_KEY:web search" \
+    #               "ref-tools:ENABLE_REF_TOOLS_MCP:REF_TOOLS_API_KEY:reference docs" \
+    #               "github:ENABLE_GITHUB_MCP:GITHUB_PERSONAL_ACCESS_TOKEN:repository integration"; do
+    #     IFS=':' read -r name var key desc <<< "$server"
+    #     if [ "${!var:-false}" = "true" ] && [ -n "${!key}" ]; then
+    #         echo "   ✅ $name ($desc)"
+    #         ((enabled_count++))
+    #     elif [ "${!var:-false}" = "true" ]; then
+    #         echo "   ⚠️  $name (missing $key)"
+    #         ((disabled_count++))
+    #     else
+    #         echo "   ❌ $name (disabled)"
+    #         ((disabled_count++))
+    #     fi
+    # done
+    
+    # Shell shortcuts
+    echo ""
+    echo "⌨️  Shell Shortcuts:"
+    echo "   gs (git status)  gd (git diff)   gc (git commit)"
+    echo "   gp (git push)    gl (git log)    ll (list files)"
+    
+    # Summary and next steps
+    echo ""
+    echo "📈 Summary: $enabled_count servers enabled, $disabled_count disabled"
+    echo ""
+    echo "🚀 Ready to start:"
+    echo "   claude                    # Start Claude Code with MCP servers"
+    echo "   claude mcp list          # Verify MCP server connectivity"
+    echo "   ccusage                  # View usage analytics"
+    
+    # Add SearXNG info if it exists
+    local searxng_local_dir="${SEARXNG_LOCAL_INSTALL_DIR:-/opt/searxng-local}"
+    if [ "${ENABLE_SEARXNG_LOCAL:-true}" = "true" ] && [ -d "$searxng_local_dir" ] && [ -f "$searxng_local_dir/docker-compose.yaml" ]; then
+        echo ""
+        echo "🔍 Local SearXNG Instance:"
+        echo "   http://localhost:8080    # SearXNG web interface"
+        echo "   MCP server configured for zero rate limiting"
+        echo "   Location: $searxng_local_dir (persistent volume)"
+    fi
     echo ""
     echo "════════════════════════════════════════════════════════════════"
-    echo "📊 MCP Server Installation Summary:"
-    echo "   ✅ Installed: $servers_installed servers"
-    echo "   ⚠️  Failed: $servers_failed servers"
-    echo "════════════════════════════════════════════════════════════════"
+}
+
+# Function to start local SearXNG containers if configured
+start_local_searxng() {
+    # Check if SearXNG local instance is enabled
+    if [ "${ENABLE_SEARXNG_LOCAL:-true}" != "true" ]; then
+        echo "   ℹ️  SearXNG local instance is disabled (using public instances)"
+        return 0
+    fi
     
-    # Return success if we have any servers installed
-    [ $servers_installed -gt 0 ]
+    # Source the searxng configuration functions
+    source "/workspace/.devcontainer/scripts/config/searxng.sh"
+    
+    # Use the new function to start the persistent local instance
+    start_searxng_local_instance
 }
 
 # Function to display completion message
 display_completion_message() {
+    # Validate environment first
+    validate_environment_variables
+    
     echo ""
-    echo "════════════════════════════════════════════════════════════════"
     echo "✅ ClaudePod Phase 3 MCP setup complete!"
-    echo "════════════════════════════════════════════════════════════════"
-    echo ""
-    echo "📋 Available MCP servers:"
-    claude mcp list 2>/dev/null || echo "   Run 'claude mcp list' to see installed servers"
-    echo ""
-    echo "💡 Tips:"
-    echo "   - Use 'claude' to start working with MCP servers"
-    echo "   - Add API keys to enable additional servers"
-    echo "   - Check 'claude mcp list' to verify installations"
-    echo "════════════════════════════════════════════════════════════════"
+    
+    # Display comprehensive startup status
+    display_startup_status
 }
 
 # Main execution
@@ -316,30 +405,42 @@ EOF
     
     echo "✅ MCP configurations ready"
     
-    # Source .env file if it exists
-    if [ -f "/workspace/.devcontainer/.env" ]; then
-        echo "🔧 Loading environment variables from .devcontainer/.env file..."
-        set -a  # automatically export all variables
-        source /workspace/.devcontainer/.env
-        set +a  # disable automatic export
-        echo "✅ Environment variables loaded"
-    fi
+    # Environment variables already loaded in post-create.sh
+    # Set environment for proper Node.js and Claude Code operation
+    echo "🔧 Configuring Node.js environment..."
     
-    # Fix NVM permissions and conflicts
-    echo "🔧 Resolving NVM configuration conflicts..."
-    
-    # Temporarily rename .npmrc to avoid NVM conflicts during sourcing
-    if [ -f "/home/node/.npmrc" ]; then
-        mv "/home/node/.npmrc" "/home/node/.npmrc.bak"
-    fi
-    
-    # Source NVM without conflicts
+    # Source NVM to make Node.js and npm available (needed for MCP config generation)
     export NVM_DIR="/usr/local/share/nvm"
-    [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
-    
-    # Restore .npmrc after NVM is sourced
-    if [ -f "/home/node/.npmrc.bak" ]; then
-        mv "/home/node/.npmrc.bak" "/home/node/.npmrc"
+    if [ -s "$NVM_DIR/nvm.sh" ]; then
+        echo "🔧 Sourcing NVM in post-start..."
+        . "$NVM_DIR/nvm.sh"
+        
+        # Handle potential npm prefix conflicts with NVM
+        if command -v nvm &> /dev/null && command -v node &> /dev/null; then
+            echo "🔧 Checking NVM/npm prefix conflicts..."
+            # Only run nvm use if there's actually a prefix conflict, not just because Node.js exists
+            local current_prefix=$(npm config get prefix 2>/dev/null || echo "")
+            local expected_prefix="/home/node/.local"
+            
+            if [ -n "$current_prefix" ] && [ "$current_prefix" != "$expected_prefix" ]; then
+                echo "🔧 Resolving npm prefix conflict by removing conflicting settings"
+                # Remove prefix settings that conflict with NVM instead of setting them
+                npm config delete prefix 2>/dev/null || true
+                npm config delete globalconfig 2>/dev/null || true
+                echo "✅ Removed conflicting npm prefix settings for NVM compatibility"
+            else
+                echo "✅ NVM/npm prefix already correct"
+            fi
+        fi
+        
+        # Verify Node.js is now available
+        if command -v node &> /dev/null; then
+            echo "✅ Node.js available for MCP generation: $(node --version)"
+        else
+            echo "⚠️  Node.js still not available after sourcing NVM"
+        fi
+    else
+        echo "⚠️  NVM not found at $NVM_DIR/nvm.sh"
     fi
     
     # Set PATH and HOME for proper Claude Code operation
@@ -348,6 +449,46 @@ EOF
     
     # Ensure proper ownership of .local directory
     chown -R node:node /home/node/.local 2>/dev/null || true
+    
+    # CRITICAL: Re-load environment variables from .devcontainer/.env
+    # Why this is needed AGAIN after post-create.sh:
+    # - Environment variables set in post-create.sh are only available during that shell session
+    # - Container restarts/rebuilds lose those environment variables since they're not persisted
+    # - MCP config generation happens during post-start phase and requires API keys from .env
+    # - Without this re-loading, MCP servers requiring API keys will be disabled due to missing env vars
+    if [ -f "/workspace/.devcontainer/.env" ]; then
+        echo "📋 Re-loading environment variables from .devcontainer/.env (required after container rebuild)"
+        set -a  # Export all variables
+        source "/workspace/.devcontainer/.env"
+        set +a  # Stop exporting
+        echo "✅ Environment variables reloaded for MCP server configuration"
+    else
+        echo "⚠️  .devcontainer/.env file not found - MCP servers requiring API keys will be disabled"
+    fi
+    
+    # Generate MCP configuration from template
+    echo "🔧 Generating MCP configuration from template..."
+    if [ -f "/workspace/.devcontainer/config/claude/mcp.json.template" ]; then
+        # Use Node.js to generate configuration with environment loaded
+        if command -v node &> /dev/null; then
+            # Ensure script is executable and run with explicit node
+            # Note: The script now uses dotenv to load environment variables directly
+            chmod +x /workspace/.devcontainer/scripts/generate-mcp-config.js
+            if node /workspace/.devcontainer/scripts/generate-mcp-config.js; then
+                echo "✅ MCP configuration generated successfully"
+                # Validate generated configuration
+                validate_mcp_configuration
+            else
+                echo "⚠️  Failed to generate MCP configuration from template"
+                echo "   Fallback: using existing mcp.json if available"
+            fi
+        else
+            echo "⚠️  Node.js not available - cannot generate MCP configuration"
+            echo "   Using existing mcp.json configuration"
+        fi
+    else
+        echo "ℹ️  No MCP template found - using existing configuration"
+    fi
     
     # Check if Claude is available with detailed debugging
     echo "🔍 Checking Claude Code availability..."
@@ -385,21 +526,23 @@ EOF
         echo "   This is normal for first run - continuing with installation..."
     fi
     
-    echo "✅ NVM configuration resolved"
+    echo "✅ Node.js environment configured"
     
     # Install uv (for future MCP servers that might need it)
     install_uv || echo "⚠️  Continuing without uv/uvx..."
     
-    # Clean up any existing MCP server configurations
-    cleanup_mcp_servers
+    # Start SearXNG containers if configured for local instance
+    echo "🔍 Checking SearXNG container setup..."
+    start_local_searxng
     
-    # Install MCP servers fresh
-    if install_mcp_servers; then
+    # Verify MCP configuration instead of installing servers
+    if verify_mcp_config; then
         display_completion_message
         exit 0
     else
-        echo "⚠️  No MCP servers were installed."
-        echo "   You can try installing them manually later."
+        echo "⚠️  MCP configuration verification failed."
+        echo "   MCP servers are configured via mcp.json file."
+        echo "   Check that the file was copied correctly during post-create phase."
         exit 0
     fi
 }

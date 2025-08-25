@@ -1,0 +1,9 @@
+# Environment files with API keys - never commit these
+.env
+.env.*
+
+# State tracking (container-specific)
+state/
+
+# Backup configurations (auto-generated)
+config/backups/

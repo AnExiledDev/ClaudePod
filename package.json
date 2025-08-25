@@ -1,25 +1,32 @@
 {
   "name": "claudepod",
-  "version": "1.0.2",
-  "description": "A fully configured DevPod environment optimized for Claude Code development with MCP servers and modern tools.",
+  "version": "1.1.1",
+  "description": "Complete development container that sets up Claude Code with 8 powerful MCP servers, modern dev tools, and persistent configurations. Drop it into any project and get a production-ready AI development environment in minutes.",
   "main": "setup.js",
   "bin": {
-    "claudepod-setup": "./setup.js"
+    "claudepod-devcontainer": "setup.js"
   },
   "scripts": {
-    "test": "node test.js"
+    "test": "node test.js",
+    "validate-mcp": "node .devcontainer/scripts/generate-mcp-config.js"
   },
   "keywords": [
     "devcontainer",
     "claude",
     "claude-code",
     "mcp",
+    "mcp-server",
+    "ai",
     "development-environment",
     "devpod",
-    "vscode"
+    "vscode",
+    "container",
+    "serena",
+    "taskmaster",
+    "ai-development"
   ],
   "author": "AnExiledDev",
-  "license": "MIT",
+  "license": "GPL-3.0",
   "files": [
     ".devcontainer/**/*",
     "setup.js",
@@ -30,10 +37,13 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/AnExiledDev/ClaudePod.git"
+    "url": "git+https://github.com/AnExiledDev/ClaudePod.git"
   },
   "homepage": "https://github.com/AnExiledDev/ClaudePod#readme",
   "bugs": {
     "url": "https://github.com/AnExiledDev/ClaudePod/issues"
+  },
+  "dependencies": {
+    "dotenv": "^17.2.1"
   }
 }
