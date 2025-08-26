@@ -19,7 +19,7 @@ ClaudePod is available as an npm package at [npmjs.com/package/claudepod](https:
 ```bash
 # Drop into any project
 cd your-project
-npx claudepod-devcontainer
+npx claudepod
 
 # Fire it up
 devpod up .
