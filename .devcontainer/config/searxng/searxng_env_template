@@ -7,7 +7,7 @@
 # ============================================================================
 
 # SearXNG Instance Configuration
-SEARXNG_ENGINE_API_BASE_URL=http://localhost:8080/search
+SEARXNG_ENGINE_API_BASE_URL=http://localhost:80/search
 
 # Timezone Configuration
 DESIRED_TIMEZONE=UTC
@@ -68,4 +68,4 @@ ENABLE_PDF_READING=true
 # SEARXNG_DEBUG=false
 
 # Custom SearXNG instance for testing (optional)
-# CUSTOM_SEARXNG_URL=http://localhost:8080/search
+# CUSTOM_SEARXNG_URL=http://localhost:80/search

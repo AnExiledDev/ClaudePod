@@ -1,5 +1,6 @@
 {
-  "searxng_engine_api_base_url": "http://localhost:8080/search",
+  "SEARXNG_ENGINE_API_BASE_URL": "http://localhost:80/search",
+  "searxng_engine_api_base_url": "http://localhost:80/search",
   "desired_timezone": "UTC",
   "returned_scrapped_pages_no": 2,
   "scrapped_pages_no": 10,

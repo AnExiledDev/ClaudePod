@@ -63,7 +63,7 @@
         "args": ["/usr/local/mcp-servers/searxng/mcp_server.py"],
         "env": {
           "ODS_CONFIG_PATH": "${ODS_CONFIG_PATH:-/home/node/.claude/ods_config.json}",
-          "SEARXNG_ENGINE_API_BASE_URL": "${SEARXNG_ENGINE_API_BASE_URL:-http://localhost:8080/search}"
+          "SEARXNG_ENGINE_API_BASE_URL": "${SEARXNG_ENGINE_API_BASE_URL:-http://localhost:80/search}"
         }
       }
     },

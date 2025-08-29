@@ -88,7 +88,7 @@ setup_searxng_config() {
 validate_searxng_connection() {
     echo "🔍 Validating SearXNG connection..."
     
-    local searxng_url="${SEARXNG_ENGINE_API_BASE_URL:-http://localhost:8080/search}"
+    local searxng_url="${SEARXNG_ENGINE_API_BASE_URL:-http://localhost:80/search}"
     
     # Test connection to SearXNG instance
     if command -v curl >/dev/null 2>&1; then
@@ -111,7 +111,7 @@ setup_searxng_environment() {
     
     # Set default environment variables if not already set
     export ODS_CONFIG_PATH="${ODS_CONFIG_PATH:-/home/node/.claude/ods_config.json}"
-    export SEARXNG_ENGINE_API_BASE_URL="${SEARXNG_ENGINE_API_BASE_URL:-http://localhost:8080/search}"
+    export SEARXNG_ENGINE_API_BASE_URL="${SEARXNG_ENGINE_API_BASE_URL:-http://localhost:80/search}"
     export DESIRED_TIMEZONE="${DESIRED_TIMEZONE:-America/New_York}"
     
     echo "📋 Environment variables configured:"
@@ -132,40 +132,196 @@ setup_searxng_local_instance() {
     fi
     
     local install_dir="${SEARXNG_LOCAL_INSTALL_DIR:-/opt/searxng-local}"
+    local temp_dir="/tmp/searxng-local-setup"
+    local repo_url="https://github.com/searxng/searxng-docker"
     
     # Ensure install directory exists with proper permissions
     sudo mkdir -p "$install_dir"
     sudo chown -R node:node "$install_dir"
     sudo chmod 755 "$install_dir"
     
-    # Copy searxng-local configuration if it doesn't exist or is empty
+    # Install fresh SearXNG configuration from latest repository if it doesn't exist or is empty
     if [ ! -f "$install_dir/docker-compose.yaml" ] || [ ! -s "$install_dir/docker-compose.yaml" ]; then
-        echo "📋 Copying SearXNG local configuration to persistent volume..."
+        echo "📥 Installing SearXNG from latest repository..."
         
-        if [ -d "/workspace/searxng-local" ]; then
-            # Copy entire searxng-local directory contents
-            sudo cp -r /workspace/searxng-local/* "$install_dir/" 2>/dev/null || true
+        # Clean up any existing temp directory
+        if [ -d "$temp_dir" ]; then
+            rm -rf "$temp_dir"
+        fi
+        
+        # Clone the latest SearXNG Docker repository
+        if git clone "$repo_url" "$temp_dir" 2>/dev/null; then
+            echo "✅ Successfully cloned SearXNG repository"
+            
+            # Copy the necessary files from the repository
+            if [ -f "$temp_dir/docker-compose.yaml" ]; then
+                sudo cp "$temp_dir/docker-compose.yaml" "$install_dir/"
+                echo "✅ Installed docker-compose.yaml"
+            fi
+            
+            if [ -f "$temp_dir/.env" ]; then
+                sudo cp "$temp_dir/.env" "$install_dir/"
+                echo "✅ Installed .env configuration"
+            fi
+            
+            if [ -f "$temp_dir/Caddyfile" ]; then
+                sudo cp "$temp_dir/Caddyfile" "$install_dir/"
+                echo "✅ Installed Caddyfile"
+            fi
+            
+            if [ -d "$temp_dir/searxng" ]; then
+                sudo cp -r "$temp_dir/searxng" "$install_dir/"
+                echo "✅ Installed SearXNG configuration directory"
+            fi
             
             # Ensure node user owns everything
             sudo chown -R node:node "$install_dir"
             sudo chmod -R u+rwX,g+rX "$install_dir"
             
-            # Make sure docker-compose.yaml is properly copied
+            # Clean up temp directory
+            rm -rf "$temp_dir"
+            
             if [ -f "$install_dir/docker-compose.yaml" ]; then
-                echo "✅ SearXNG local configuration copied to $install_dir"
+                echo "✅ SearXNG local instance installed successfully from latest repository"
             else
-                echo "⚠️  docker-compose.yaml not found after copy"
+                echo "❌ Failed to install docker-compose.yaml from repository"
                 return 1
             fi
         else
-            echo "⚠️  Source searxng-local directory not found in workspace"
+            echo "❌ Failed to clone SearXNG repository from $repo_url"
             return 1
         fi
     else
         echo "📁 SearXNG local configuration already exists in $install_dir"
     fi
     
+    # Always configure SearXNG for local development (even if installation already exists)
+    configure_searxng_for_local_dev "$install_dir"
+    
     echo "✅ SearXNG local instance setup complete"
+    return 0
+}
+
+configure_searxng_for_local_dev() {
+    local install_dir="$1"
+    echo "🔧 Configuring SearXNG for local development..."
+    
+    # Fix Caddyfile if it exists as directory (from previous broken installations)
+    if [ -d "$install_dir/Caddyfile" ]; then
+        echo "🔧 Fixing Caddyfile directory issue..."
+        sudo rm -rf "$install_dir/Caddyfile"
+        # Re-download proper Caddyfile
+        local temp_dir="/tmp/searxng-caddyfile-fix"
+        if git clone "https://github.com/searxng/searxng-docker" "$temp_dir" 2>/dev/null; then
+            if [ -f "$temp_dir/Caddyfile" ]; then
+                sudo cp "$temp_dir/Caddyfile" "$install_dir/"
+                echo "✅ Fixed Caddyfile (was incorrectly a directory)"
+            fi
+            rm -rf "$temp_dir"
+        fi
+    fi
+    
+    # Generate secure secret key
+    local secret_key=$(openssl rand -base64 32 2>/dev/null || echo "$(date +%s)-$(whoami)-$(hostname)" | base64)
+    
+    # Create optimized settings.yml for local development
+    sudo tee "$install_dir/searxng/settings.yml" > /dev/null << EOF
+use_default_settings: true
+server:
+  secret_key: "$secret_key"
+  limiter: false
+  image_proxy: true
+  public_instance: false
+  bind_address: "0.0.0.0:8080"
+  method: "POST"
+redis:
+  url: redis://redis:6379/0
+search:
+  safe_search: 0
+  autocomplete: ""
+  default_lang: ""
+  ban_time_on_fail: 0
+  max_ban_time_on_fail: 0
+  formats: ['html', 'json']
+general:
+  debug: false
+  instance_name: "SearXNG Local Development"
+enabled_plugins: []
+disabled_plugins: ['Hash plugin', 'Tracker URL remover', 'Hostnames plugin', 'Unit converter plugin', 'Self Information', 'Search on category select', 'Tor check plugin']
+EOF
+    
+    # Disable limiter configuration by renaming the file
+    if [ -f "$install_dir/searxng/limiter.toml" ]; then
+        sudo mv "$install_dir/searxng/limiter.toml" "$install_dir/searxng/limiter.toml.disabled"
+        echo "✅ Disabled SearXNG rate limiter"
+    fi
+    
+    # Fix docker-compose.yaml network configuration for MCP compatibility
+    echo "🔧 Fixing docker-compose.yaml for MCP server compatibility..."
+    if [ -f "$install_dir/docker-compose.yaml" ]; then
+        # Replace network_mode: host with proper networks configuration
+        sudo sed -i 's/network_mode: host/networks:\
+      - searxng\
+    ports:\
+      - "80:80"\
+      - "443:443"/' "$install_dir/docker-compose.yaml"
+        echo "✅ Fixed docker-compose.yaml network configuration"
+    else
+        echo "⚠️  docker-compose.yaml not found, skipping network fix"
+    fi
+    
+    # Fix Caddyfile proxy target and API paths for MCP compatibility  
+    echo "🔧 Fixing Caddyfile for MCP server compatibility..."
+    if [ -f "$install_dir/Caddyfile" ]; then
+        # Replace localhost:8080 with searxng:8080 for container networking
+        sudo sed -i 's/reverse_proxy localhost:8080/reverse_proxy searxng:8080/' "$install_dir/Caddyfile"
+        
+        # Add /search and / paths to @api matcher after /stats/checker
+        sudo sed -i '/path \/stats\/checker/a\\tpath \/search\
+\tpath \/' "$install_dir/Caddyfile"
+        echo "✅ Fixed Caddyfile proxy target and API paths"
+    else
+        echo "⚠️  Caddyfile not found, skipping proxy fix"
+    fi
+    
+    # Ensure proper ownership
+    sudo chown -R node:node "$install_dir"
+    
+    echo "✅ SearXNG configured for local development (JSON API enabled, network fixed, no rate limiting)"
+}
+
+test_searxng_functionality() {
+    echo "🧪 Testing SearXNG functionality..."
+    
+    local searxng_url="${SEARXNG_ENGINE_API_BASE_URL:-http://localhost:80/search}"
+    
+    # Wait for services to be ready
+    local attempts=0
+    while [ $attempts -lt 30 ]; do
+        if curl -s --connect-timeout 5 "http://localhost:8080/" >/dev/null 2>&1; then
+            break
+        fi
+        sleep 2
+        ((attempts++))
+    done
+    
+    if [ $attempts -eq 30 ]; then
+        echo "⚠️  SearXNG web interface not responding after 60 seconds"
+        return 1
+    fi
+    
+    # Test web interface
+    if curl -s "http://localhost:8080/" | grep -qi "searxng"; then
+        echo "✅ SearXNG web interface accessible"
+    else
+        echo "⚠️  SearXNG web interface not working properly"
+        return 1
+    fi
+    
+    # Note about API access - may require specific headers/form submission
+    echo "ℹ️  SearXNG installed and web interface working"
+    echo "   API access may require proper form submission (not just GET requests)"
+    
     return 0
 }
 
@@ -215,6 +371,9 @@ start_searxng_local_instance() {
         sleep 5
         if docker compose ps 2>/dev/null | grep -q "Up" || docker-compose ps 2>/dev/null | grep -q "Up"; then
             echo "🔍 SearXNG should be accessible at http://localhost:8080"
+            
+            # Test functionality
+            test_searxng_functionality
         else
             echo "⚠️  Containers started but may need more time to initialize"
             echo "   You can check status with: docker compose ps (in $install_dir)"
