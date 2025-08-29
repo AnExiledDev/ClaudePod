@@ -67,3 +67,4 @@ node_modules/
 !.gitattributes
 !.npmignore
 .devcontainer/config/claude/output-styles/strict-development.md
+.devcontainer/config/claude/mcp.json
