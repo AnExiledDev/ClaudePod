@@ -23,6 +23,9 @@ function copyDirectory(src, dest) {
 }
 
 function main() {
+  const args = process.argv.slice(2);
+  const force = args.includes('--force') || args.includes('-f');
+
   const currentDir = process.cwd();
   const packageDir = __dirname;
   const devcontainerSrc = path.join(packageDir, '.devcontainer');
@@ -32,9 +35,14 @@ function main() {
 
   // Check if .devcontainer already exists
   if (fs.existsSync(devcontainerDest)) {
-    console.log('⚠️  .devcontainer directory already exists.');
-    console.log('   Remove it first or run in a different directory.');
-    process.exit(1);
+    if (force) {
+      console.log('⚠️  Removing existing .devcontainer directory...');
+      fs.rmSync(devcontainerDest, { recursive: true, force: true });
+    } else {
+      console.log('⚠️  .devcontainer directory already exists.');
+      console.log('   Use --force to overwrite, or remove it manually.');
+      process.exit(1);
+    }
   }
 
   // Check if source .devcontainer exists
@@ -50,14 +58,14 @@ function main() {
     console.log('✅ ClaudePod DevContainer configuration installed!');
     console.log('');
     console.log('🔧 Next steps:');
-    console.log('   1. devpod up .');
-    console.log('   2. devpod ssh <workspace-name> --ide vscode');
-    console.log('   3. Start coding with Claude: claude');
+    console.log('   1. Open this folder in VS Code');
+    console.log('   2. Select "Reopen in Container" from the command palette');
+    console.log('   3. Run: claude');
     console.log('');
     console.log('📚 Features included:');
     console.log('   • Claude Code CLI with optimized tool configuration');
-    console.log('   • MCP servers: Serena, DeepWiki, TaskMaster AI, Sequential Thinking');
-    console.log('   • Development tools: Node.js 20, Python 3.13, Git with delta');
+    console.log('   • MCP servers: Qdrant (vector memory), Reasoner');
+    console.log('   • Development tools: Node.js LTS, Python 3.14, Git with delta');
     console.log('   • Persistent configuration and shell history');
     console.log('');
     console.log('🔗 Documentation: See .devcontainer/README.md');

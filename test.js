@@ -16,12 +16,11 @@ function runTests() {
   // Test 3: Check required files exist
   const requiredFiles = [
     'package.json',
-    'setup.js', 
+    'setup.js',
     'README.md',
     '.devcontainer/devcontainer.json',
-    '.devcontainer/post-create.sh',
-    '.devcontainer/post-start.sh',
-    '.devcontainer/config/claude/settings.json'
+    '.devcontainer/scripts/setup.sh',
+    '.devcontainer/config/settings.json'
   ];
 
   let allFilesExist = true;

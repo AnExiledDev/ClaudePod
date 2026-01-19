@@ -13,7 +13,7 @@
   "permissions": {
     "defaultMode": "plan",
     "additionalDirectories": [],
-    "allow": ["Read(//workspaces/*)", "WebFetch(domain:*)"],
+    "allow": ["Read(/workspaces/*)", "WebFetch(domain:*)"],
     "ask": [],
     "deny": []
   },

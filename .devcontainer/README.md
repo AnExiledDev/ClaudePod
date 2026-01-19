@@ -1,12 +1,15 @@
 # ClaudePod DevContainer
 
+[![License: GPL-3.0](https://img.shields.io/badge/License-GPL%203.0-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
+[![npm version](https://img.shields.io/npm/v/claudepod.svg)](https://www.npmjs.com/package/claudepod)
+
 A curated development environment optimized for AI-powered coding with Claude Code. ClaudePod comes pre-configured with language servers, code intelligence tools, and official Anthropic plugins to streamline your development workflow.
 
 ## Prerequisites
 
 - **Docker Desktop** (or compatible container runtime like Podman)
 - **VS Code** with the [Dev Containers extension](https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.remote-containers), or **GitHub Codespaces**
-- **Anthropic API key** - obtain one from [console.anthropic.com](https://console.anthropic.com/)
+- **Claude Code authentication** - see [Authentication](#authentication) section
 
 ## Quick Start
 
@@ -14,16 +17,45 @@ A curated development environment optimized for AI-powered coding with Claude Co
    - VS Code: Open the folder, then select "Reopen in Container" from the command palette
    - Codespaces: Create a new codespace from this repository
 
-2. **Set Your API Key**
+2. **Authenticate** (first time only)
    ```bash
-   export ANTHROPIC_API_KEY="sk-ant-..."
+   claude
    ```
-   Or add it to your shell profile for persistence.
+   Follow the prompts to authenticate via browser or API key.
 
 3. **Start Claude Code**
    ```bash
    cc
    ```
+
+## Authentication
+
+Claude Code supports multiple authentication methods. On first run, you'll be prompted to choose:
+
+### Browser Login (Recommended)
+
+```bash
+claude
+```
+
+Select "Login with browser" and complete authentication in your browser. This uses your Claude.ai account.
+
+### API Key
+
+For programmatic access or environments without browsers:
+
+```bash
+export ANTHROPIC_API_KEY="sk-ant-..."
+claude
+```
+
+Get an API key from [console.anthropic.com](https://console.anthropic.com/).
+
+### Credential Persistence
+
+Authentication credentials are stored in `/workspaces/.claude/` and persist across container rebuilds.
+
+For more options, see the [Claude Code documentation](https://docs.anthropic.com/en/docs/claude-code).
 
 ## GitHub CLI Authentication
 
@@ -176,7 +208,7 @@ ClaudePod includes several custom devcontainer features:
 
 ## Essential Gotchas
 
-- **API key required**: Set `ANTHROPIC_API_KEY` before running Claude Code
+- **Authentication required**: Run `claude` once to authenticate before using `cc`
 - **Plan mode default**: The container starts in "plan" mode, which prompts for approval before making changes
 - **Project-local config**: The `cc` command creates `.claude/` in your current directory for project-specific settings
 - **GitHub auth persists**: Run `gh auth login` once; credentials survive container rebuilds (stored in `/workspaces/.gh/`)
