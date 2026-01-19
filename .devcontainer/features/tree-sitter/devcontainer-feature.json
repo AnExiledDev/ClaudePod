@@ -1,0 +1,52 @@
+{
+  "id": "tree-sitter",
+  "version": "1.1.0",
+  "name": "Tree-sitter Parser",
+  "description": "Installs tree-sitter CLI (via npm) and parsing library with Node.js and Python bindings",
+  "maintainer": "AnExiledDev",
+  "documentationURL": "https://tree-sitter.github.io/tree-sitter/",
+  "options": {
+    "version": {
+      "type": "string",
+      "description": "tree-sitter-cli npm package version (e.g., 'latest', '0.24.4')",
+      "default": "latest"
+    },
+    "bindings": {
+      "type": "string",
+      "description": "Language bindings to install (node, python, both, none)",
+      "default": "both",
+      "enum": [
+        "node",
+        "python",
+        "both",
+        "none"
+      ],
+      "proposals": [
+        "node",
+        "python",
+        "both",
+        "none"
+      ]
+    },
+    "installCli": {
+      "type": "boolean",
+      "description": "Install tree-sitter CLI tool (requires Node.js)",
+      "default": true
+    },
+    "grammars": {
+      "type": "string",
+      "description": "Comma-separated list of grammars to preload (e.g., 'javascript,python,rust'). Empty for none.",
+      "default": "javascript,typescript,python"
+    },
+    "username": {
+      "type": "string",
+      "description": "Container user to install for",
+      "default": "automatic"
+    }
+  },
+  "installsAfter": [
+    "ghcr.io/devcontainers/features/common-utils:2",
+    "ghcr.io/devcontainers/features/node:1",
+    "ghcr.io/devcontainers/features/python:1"
+  ]
+}

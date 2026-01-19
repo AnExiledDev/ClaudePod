@@ -1,14 +1,13 @@
 {
   "name": "claudepod",
-  "version": "1.1.2",
+  "version": "1.2.0",
   "description": "Complete development container that sets up Claude Code with 8 powerful MCP servers, modern dev tools, and persistent configurations. Drop it into any project and get a production-ready AI development environment in minutes.",
   "main": "setup.js",
   "bin": {
     "claudepod-devcontainer": "setup.js"
   },
   "scripts": {
-    "test": "node test.js",
-    "validate-mcp": "node .devcontainer/scripts/generate-mcp-config.js"
+    "test": "node test.js"
   },
   "keywords": [
     "devcontainer",

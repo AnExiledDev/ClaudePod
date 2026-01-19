@@ -1,0 +1,38 @@
+{
+  "id": "claude-monitor",
+  "version": "1.0.0",
+  "name": "Claude Monitor - Real-time Usage Tracker",
+  "description": "Installs claude-monitor for real-time Claude Code token usage monitoring with ML-based predictions",
+  "maintainer": "AnExiledDev",
+  "documentationURL": "https://github.com/Maciek-roboblog/Claude-Code-Usage-Monitor",
+  "options": {
+    "version": {
+      "type": "string",
+      "description": "claude-monitor version to install (e.g., 'latest', '1.2.0')",
+      "default": "latest"
+    },
+    "installer": {
+      "type": "string",
+      "description": "Package installer to use",
+      "default": "uv",
+      "enum": [
+        "uv",
+        "pipx",
+        "pip"
+      ],
+      "proposals": [
+        "uv",
+        "pipx",
+        "pip"
+      ]
+    },
+    "username": {
+      "type": "string",
+      "description": "Container user to install for",
+      "default": "automatic"
+    }
+  },
+  "installsAfter": [
+    "ghcr.io/devcontainers/features/python"
+  ]
+}

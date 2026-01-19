@@ -1,0 +1,57 @@
+{
+  "id": "mcp-qdrant",
+  "version": "1.0.4",
+  "name": "Qdrant MCP Server",
+  "description": "Installs Qdrant MCP server for vector database integration with AI coding agents",
+  "maintainer": "AnExiledDev",
+  "documentationURL": "https://github.com/qdrant/mcp-server-qdrant",
+  "options": {
+    "qdrantUrl": {
+      "type": "string",
+      "description": "Qdrant instance URL (e.g., https://xyz.cloud.qdrant.io:6333). Leave empty for local instance.",
+      "default": ""
+    },
+    "qdrantApiKey": {
+      "type": "string",
+      "description": "Qdrant API key for authentication (required for cloud instances)",
+      "default": ""
+    },
+    "qdrantLocalPath": {
+      "type": "string",
+      "description": "Local storage path for Qdrant (used when qdrantUrl is empty)",
+      "default": "/workspaces/.qdrant/storage"
+    },
+    "collectionName": {
+      "type": "string",
+      "description": "Default collection name for storing vectors",
+      "default": "agent-memory"
+    },
+    "embeddingModel": {
+      "type": "string",
+      "description": "FastEmbed model for generating embeddings",
+      "default": "all-MiniLM-L6-v2",
+      "enum": [
+        "all-MiniLM-L6-v2",
+        "BAAI/bge-small-en-v1.5",
+        "sentence-transformers/all-mpnet-base-v2",
+        "BAAI/bge-base-en-v1.5"
+      ],
+      "proposals": [
+        "all-MiniLM-L6-v2",
+        "BAAI/bge-small-en-v1.5",
+        "sentence-transformers/all-mpnet-base-v2",
+        "BAAI/bge-base-en-v1.5"
+      ]
+    },
+    "username": {
+      "type": "string",
+      "description": "Container user to install for",
+      "default": "automatic"
+    }
+  },
+  "installsAfter": [
+    "ghcr.io/devcontainers/features/python:1",
+    "ghcr.io/devcontainers/features/common-utils:2",
+    "./features/claude-code"
+  ]
+}

@@ -1,0 +1,36 @@
+{
+  "cleanupPeriodDays": 360,
+  "includeCoAuthoredBy": false,
+  "statusLine": {
+    "type": "command",
+    "command": "/usr/local/bin/ccstatusline-wrapper"
+  },
+  "outputStyle": "",
+  "forceLoginMethod": "claudeai",
+  "installationMethod": "npm-global",
+  "enabledMcpjsonServers": [],
+  "disabledMcpjsonServers": [],
+  "permissions": {
+    "defaultMode": "plan",
+    "additionalDirectories": [],
+    "allow": ["Read(//workspaces/*)", "WebFetch(domain:*)"],
+    "ask": [],
+    "deny": []
+  },
+  "hooks": {},
+  "env": {
+    "ANTHROPIC_MODEL": "claude-opus-4-5-20251101",
+    "CLAUDE_CODE_SUBAGENT_MODEL": "claude-haiku-4-5-20251001",
+    "ANTHROPIC_DEFAULT_OPUS_MODEL": "claude-opus-4-5-20251101",
+    "ANTHROPIC_DEFAULT_SONNET_MODEL": "claude-sonnet-4-5-20250929",
+    "ANTHROPIC_DEFAULT_HAIKU_MODEL": "claude-haiku-4-5-20251001",
+    "BASH_DEFAULT_TIMEOUT_MS": "240000",
+    "BASH_MAX_TIMEOUT_MS": "600000",
+    "CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC": "true",
+    "CLAUDE_CODE_MAX_OUTPUT_TOKENS": "64000",
+    "MAX_MCP_OUTPUT_TOKENS": "10000",
+    "MAX_THINKING_TOKENS": "31999",
+    "MCP_TIMEOUT": "120000",
+    "MCP_TOOL_TIMEOUT": "30000"
+  }
+}

@@ -1,0 +1,19 @@
+{
+  "id": "ccstatusline",
+  "version": "1.0.0",
+  "name": "ccstatusline",
+  "description": "Compact powerline status line for Claude Code with essential metrics",
+  "maintainer": "AnExiledDev",
+  "documentationURL": "https://github.com/sirmalloc/ccstatusline",
+  "options": {
+    "username": {
+      "type": "string",
+      "description": "Container user to install for",
+      "default": "automatic"
+    }
+  },
+  "installsAfter": [
+    "ghcr.io/devcontainers/features/node:1",
+    "ghcr.io/devcontainers/features/common-utils:2"
+  ]
+}
