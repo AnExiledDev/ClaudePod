@@ -15,6 +15,24 @@ npx claudepod
 
 This copies the `.devcontainer/` directory to your project. Then open in VS Code and select "Reopen in Container".
 
+### Options
+
+```bash
+npx claudepod --force    # Overwrite existing .devcontainer directory
+npx claudepod -f         # Short form
+```
+
+### Alternative Install Methods
+
+```bash
+# Install globally
+npm install -g claudepod
+claudepod
+
+# Run specific version
+npx claudepod@1.2.3
+```
+
 ## Prerequisites
 
 - **Docker Desktop** (or compatible container runtime like Podman)
@@ -222,6 +240,23 @@ ClaudePod includes several custom devcontainer features:
 - **Plan mode default**: The container starts in "plan" mode, which prompts for approval before making changes
 - **Project-local config**: The `cc` command creates `.claude/` in your current directory for project-specific settings
 - **GitHub auth persists**: Run `gh auth login` once; credentials survive container rebuilds (stored in `/workspaces/.gh/`)
+
+## Development
+
+### Testing Locally
+
+```bash
+git clone https://github.com/AnExiledDev/ClaudePod.git
+cd ClaudePod
+npm test
+```
+
+### Publishing
+
+```bash
+# Bump version in package.json, then:
+npm publish
+```
 
 ## Further Reading
 
