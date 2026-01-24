@@ -20,10 +20,9 @@ fi
 : "${SETUP_CONFIG:=true}"
 : "${SETUP_ALIASES:=true}"
 : "${OVERWRITE_CONFIG:=false}"
-: "${SETUP_LSP:=true}"
 : "${SETUP_PLUGINS:=true}"
 
-export CLAUDE_CONFIG_DIR CONFIG_SOURCE_DIR SETUP_CONFIG SETUP_ALIASES OVERWRITE_CONFIG SETUP_LSP SETUP_PLUGINS
+export CLAUDE_CONFIG_DIR CONFIG_SOURCE_DIR SETUP_CONFIG SETUP_ALIASES OVERWRITE_CONFIG SETUP_PLUGINS
 
 
 echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
@@ -51,7 +50,6 @@ run_script() {
 
 run_script "$SCRIPT_DIR/setup-config.sh" "$SETUP_CONFIG"
 run_script "$SCRIPT_DIR/setup-aliases.sh" "$SETUP_ALIASES"
-run_script "$SCRIPT_DIR/setup-lsp.sh" "$SETUP_LSP"
 run_script "$SCRIPT_DIR/setup-plugins.sh" "$SETUP_PLUGINS"
 run_script "$SCRIPT_DIR/setup-irie-claude.sh" "true"
 

@@ -1,5 +1,34 @@
 # ClaudePod Devcontainer Changelog
 
+## [v1.3.1] - 2025-01-24
+
+### Fixed
+
+- **Plugin installation**: Fixed invalid plugin.json schema causing installation failures
+  - Removed `$schema`, `category`, `version`, `lspServers` keys from individual plugin.json files
+  - These fields now correctly reside only in `marketplace.json`
+- **setup-plugins.sh**: Fixed path resolution for marketplace discovery
+  - Changed from `${containerWorkspaceFolder:-.}` to `SCRIPT_DIR` relative path
+  - Script now works correctly regardless of working directory
+
+### Changed
+
+- **Consolidated LSP setup**: Merged `setup-lsp.sh` into `setup-plugins.sh`
+  - Single script now handles both official and local marketplace plugins
+  - Removed `SETUP_LSP` environment variable (no longer needed)
+- **settings.json**: Updated Claude Code configuration
+  - Increased `MAX_THINKING_TOKENS` from 14999 to 63999
+  - Added `CLAUDE_AUTOCOMPACT_PCT_OVERRIDE`: 80 (auto-compact at 80% context)
+  - Added `CLAUDE_CODE_SHELL`: zsh
+  - Added `FORCE_AUTOUPDATE_PLUGINS`: true
+  - Added `autoUpdatesChannel`: "latest"
+
+### Removed
+
+- **setup-lsp.sh**: Deleted (functionality consolidated into setup-plugins.sh)
+
+---
+
 ## [v1.3.0] - 2025-01-24
 
 ### Added

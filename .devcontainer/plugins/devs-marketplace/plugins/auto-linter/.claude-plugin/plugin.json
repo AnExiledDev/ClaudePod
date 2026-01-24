@@ -1,7 +1,7 @@
 {
-  "$schema": "https://anthropic.com/claude-code/plugin.schema.json",
   "name": "auto-linter",
   "description": "Auto-lints files after editing (pyright for Python)",
-  "version": "1.0.0",
-  "category": "development"
+  "author": {
+    "name": "AnExiledDev"
+  }
 }

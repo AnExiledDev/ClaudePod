@@ -1,40 +1,7 @@
 {
-  "$schema": "https://anthropic.com/claude-code/plugin.schema.json",
   "name": "claudepod-lsp",
   "description": "LSP servers for ClaudePod (Python, TypeScript, Go)",
-  "version": "1.0.0",
-  "category": "development",
-  "lspServers": {
-    "pyright": {
-      "command": "pyright-langserver",
-      "args": ["--stdio"],
-      "extensionToLanguage": {
-        ".py": "python",
-        ".pyi": "python"
-      }
-    },
-    "typescript": {
-      "command": "typescript-language-server",
-      "args": ["--stdio"],
-      "extensionToLanguage": {
-        ".ts": "typescript",
-        ".tsx": "typescriptreact",
-        ".js": "javascript",
-        ".jsx": "javascriptreact",
-        ".mts": "typescript",
-        ".cts": "typescript",
-        ".mjs": "javascript",
-        ".cjs": "javascript"
-      }
-    },
-    "gopls": {
-      "command": "gopls",
-      "args": ["serve"],
-      "extensionToLanguage": {
-        ".go": "go",
-        ".mod": "go.mod",
-        ".sum": "go.sum"
-      }
-    }
+  "author": {
+    "name": "AnExiledDev"
   }
 }

@@ -1,7 +1,7 @@
 {
-  "$schema": "https://anthropic.com/claude-code/plugin.schema.json",
   "name": "dangerous-command-blocker",
   "description": "Blocks dangerous bash commands (rm -rf, sudo rm, chmod 777, force push)",
-  "version": "1.0.0",
-  "category": "safety"
+  "author": {
+    "name": "AnExiledDev"
+  }
 }
