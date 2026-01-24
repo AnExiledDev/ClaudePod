@@ -1,0 +1,16 @@
+{
+  "description": "Notification when Claude finishes responding",
+  "hooks": {
+    "Stop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "/usr/local/bin/claude-notify",
+            "timeout": 5
+          }
+        ]
+      }
+    ]
+  }
+}

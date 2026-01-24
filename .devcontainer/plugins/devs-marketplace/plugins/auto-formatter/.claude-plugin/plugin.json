@@ -1,0 +1,7 @@
+{
+  "$schema": "https://anthropic.com/claude-code/plugin.schema.json",
+  "name": "auto-formatter",
+  "description": "Auto-formats files after editing (black for Python, gofmt for Go)",
+  "version": "1.0.0",
+  "category": "development"
+}

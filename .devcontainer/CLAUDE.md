@@ -13,6 +13,8 @@ ClaudePod devcontainer for AI-assisted development with Claude Code.
 │   │   ├── settings.json    # Claude Code settings
 │   │   └── main-system-prompt.md
 │   ├── features/            # Custom devcontainer features
+│   ├── plugins/             # Local plugin marketplace
+│   │   └── devs-marketplace/
 │   └── scripts/             # Setup scripts
 ├── .claude/                 # Runtime Claude config (created on first run)
 │   ├── settings.json        # Active settings
@@ -34,8 +36,9 @@ ClaudePod devcontainer for AI-assisted development with Claude Code.
 
 | Command | Purpose |
 |---------|---------|
-| `cc` | Run Claude Code with auto-configuration (creates local `.claude/` if needed) |
-| `claude` | Direct Claude Code CLI |
+| `claude` | Run Claude Code with auto-configuration (creates local `.claude/` if needed) |
+| `cc` | Shorthand for `claude` with config |
+| `ccraw` | Vanilla Claude Code without any config (bypasses function override) |
 | `ccusage` | Analyze token usage history |
 | `gh` | GitHub CLI for repo operations |
 | `uv` | Fast Python package manager |
@@ -69,17 +72,31 @@ Scripts in `./scripts/` run via `postStartCommand`:
 | `setup.sh` | Main orchestrator |
 | `setup-config.sh` | Copies config files to `/workspaces/.claude/` |
 | `setup-aliases.sh` | Creates `cc` shell function |
-| `setup-lsp.sh` | Installs LSP plugins |
+| `setup-lsp.sh` | Installs LSP plugins from local marketplace |
 | `setup-plugins.sh` | Installs official Anthropic plugins |
 
 ## Installed Plugins
 
 Automatically installed on container start:
 
-- `frontend-design@claude-plugins-official`
-- `code-review@claude-plugins-official`
-- `commit-commands@claude-plugins-official`
-- `pr-review-toolkit@claude-plugins-official`
+- `frontend-design@claude-plugins-official` (skill)
+- `claudepod-lsp@devs-marketplace` (LSP for Python + TypeScript/JavaScript)
+
+### Local Marketplace
+
+The `devs-marketplace` in `plugins/` provides locally-managed plugins:
+
+```
+plugins/devs-marketplace/
+├── .claude-plugin/
+│   └── marketplace.json      # Marketplace manifest
+└── plugins/
+    └── claudepod-lsp/        # Combined LSP plugin
+        └── .claude-plugin/
+            └── plugin.json
+```
+
+This gives full control over LSP configuration without external dependencies.
 
 ## Environment Variables
 

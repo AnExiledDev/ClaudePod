@@ -2,7 +2,7 @@
   "id": "lsp-servers",
   "version": "1.0.0",
   "name": "LSP Servers for Claude Code",
-  "description": "Installs language server binaries for Python (pyright) and TypeScript (typescript-language-server)",
+  "description": "Installs language server binaries for Python (pyright), TypeScript (typescript-language-server), and Go (gopls)",
   "maintainer": "AnExiledDev",
   "documentationURL": "https://code.claude.com/docs/en/discover-plugins#code-intelligence",
   "options": {
@@ -21,6 +21,11 @@
       "description": "TypeScript npm package version (e.g., 'latest', '5.3.0')",
       "default": "latest"
     },
+    "goplsVersion": {
+      "type": "string",
+      "description": "gopls version (e.g., 'latest', 'v0.16.0')",
+      "default": "latest"
+    },
     "username": {
       "type": "string",
       "description": "Container user to install for",
@@ -29,6 +34,7 @@
   },
   "installsAfter": [
     "ghcr.io/devcontainers/features/common-utils:2",
-    "ghcr.io/devcontainers/features/node:1"
+    "ghcr.io/devcontainers/features/node:1",
+    "ghcr.io/devcontainers/features/go:1"
   ]
 }

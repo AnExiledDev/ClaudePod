@@ -59,9 +59,15 @@ node_modules/
 # Claude Code directory (user-specific)
 .claude/
 
+# Work in progress
+review-cli/
+
 # All hidden directories except devcontainer
 .*
 !.devcontainer/
+!.devcontainer/**/.claude-plugin/
+!.devcontainer/
+!.devcontainer/**/.claude-plugin/**/.claude-plugin/
 !.git/
 !.gitignore
 !.gitattributes

@@ -1,0 +1,17 @@
+{
+  "description": "Auto-lint files after editing",
+  "hooks": {
+    "PostToolUse": [
+      {
+        "matcher": "Edit|Write",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3 ${CLAUDE_PLUGIN_ROOT}/scripts/lint-file.py",
+            "timeout": 60
+          }
+        ]
+      }
+    ]
+  }
+}

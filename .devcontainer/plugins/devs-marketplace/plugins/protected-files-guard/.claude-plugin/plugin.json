@@ -1,0 +1,7 @@
+{
+  "$schema": "https://anthropic.com/claude-code/plugin.schema.json",
+  "name": "protected-files-guard",
+  "description": "Blocks modifications to .env, lock files, .git/, and credentials",
+  "version": "1.0.0",
+  "category": "safety"
+}

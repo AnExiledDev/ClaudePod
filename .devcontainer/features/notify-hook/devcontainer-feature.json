@@ -1,0 +1,23 @@
+{
+  "id": "notify-hook",
+  "version": "1.0.0",
+  "name": "Claude Code Notification Hook",
+  "description": "Desktop notifications and audio chime when Claude finishes responding",
+  "documentationURL": "https://github.com/AnExiledDev/ClaudePod",
+  "options": {
+    "enableBell": {
+      "type": "boolean",
+      "description": "Enable terminal bell (audio chime) on completion",
+      "default": true
+    },
+    "enableOsc": {
+      "type": "boolean",
+      "description": "Enable OSC 777 desktop notifications",
+      "default": true
+    }
+  },
+  "installsAfter": [
+    "ghcr.io/devcontainers/features/common-utils:2",
+    "ghcr.io/anthropics/devcontainer-features/claude-code:1"
+  ]
+}

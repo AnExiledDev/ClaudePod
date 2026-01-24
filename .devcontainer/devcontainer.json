@@ -1,5 +1,5 @@
 {
-  "name": "ClaudePod",
+  "name": "ClaudePod - ${localWorkspaceFolderBasename}",
   "image": "mcr.microsoft.com/devcontainers/python:3.14",
 
   "workspaceFolder": "/workspaces",
@@ -16,13 +16,16 @@
     "ghcr.io/devcontainers/features/github-cli",
     "ghcr.io/devcontainers/features/docker-outside-of-docker",
     "ghcr.io/devcontainers-extra/features/uv",
+    "ghcr.io/devcontainers/features/go",
     "ghcr.io/anthropics/devcontainer-features/claude-code",
+    "./features/agent-browser",
     "./features/claude-monitor",
     "./features/ccusage",
     "./features/ccstatusline",
     "./features/ast-grep",
     "./features/tree-sitter",
-    "./features/lsp-servers"
+    "./features/lsp-servers",
+    "./features/notify-hook"
   ],
 
   "features": {
@@ -36,6 +39,7 @@
       "moby": false
     },
     "ghcr.io/devcontainers-extra/features/uv:1": {},
+    "ghcr.io/devcontainers/features/go:1": {},
     "ghcr.io/anthropics/devcontainer-features/claude-code:1": {},
     "./features/ccusage": {
       "version": "latest",
@@ -52,7 +56,12 @@
     },
     "./features/ast-grep": {},
     "./features/tree-sitter": {},
-    "./features/lsp-servers": {}
+    "./features/lsp-servers": {},
+    "./features/agent-browser": {},
+    "./features/notify-hook": {
+      "enableBell": true,
+      "enableOsc": true
+    }
   },
 
   "postStartCommand": "bash ${containerWorkspaceFolder}/.devcontainer/scripts/setup.sh",
@@ -63,9 +72,12 @@
   "customizations": {
     "vscode": {
       "settings": {
-        "terminal.integrated.defaultProfile.linux": "bash"
+        "terminal.integrated.defaultProfile.linux": "bash",
+        "terminal.integrated.enableBell": true
       },
-      "extensions": []
+      "extensions": [
+        "wenbopan.vscode-terminal-osc-notifier"
+      ]
     }
   }
 }

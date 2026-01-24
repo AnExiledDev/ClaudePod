@@ -1,0 +1,7 @@
+{
+  "$schema": "https://anthropic.com/claude-code/plugin.schema.json",
+  "name": "planning-reminder",
+  "description": "Injects planning-first workflow reminder on every prompt",
+  "version": "1.0.0",
+  "category": "workflow"
+}

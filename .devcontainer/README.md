@@ -108,6 +108,7 @@ GitHub CLI credentials are automatically persisted across container rebuilds. Th
 | Python 3.14 | Base language runtime |
 | Node.js LTS | JavaScript runtime |
 | TypeScript | Via Node.js |
+| Go | Latest stable via devcontainer feature |
 
 ### Package Managers
 | Tool | Description |
@@ -124,6 +125,7 @@ GitHub CLI credentials are automatically persisted across container rebuilds. Th
 | `git` | Version control |
 | `jq` | JSON processor |
 | `curl` | HTTP client |
+| `agent-browser` | Headless browser automation for AI agents |
 
 ### Code Intelligence
 | Tool | Description |

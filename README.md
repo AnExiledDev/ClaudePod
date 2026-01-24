@@ -152,6 +152,7 @@ GitHub CLI credentials are automatically persisted across container rebuilds. Th
 | `git` | Version control |
 | `jq` | JSON processor |
 | `curl` | HTTP client |
+| `agent-browser` | Headless browser automation for AI agents |
 
 ### Code Intelligence
 | Tool | Description |
@@ -233,6 +234,7 @@ ClaudePod includes several custom devcontainer features:
 | `ast-grep` | Structural code search using AST patterns |
 | `tree-sitter` | Parser with JS/TS/Python grammars |
 | `lsp-servers` | Pyright and TypeScript language servers |
+| `agent-browser` | Browser automation with accessibility snapshots and screenshots |
 
 ## Essential Gotchas
 

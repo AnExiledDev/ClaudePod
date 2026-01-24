@@ -1,0 +1,17 @@
+{
+  "description": "Block modifications to protected files",
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Edit|Write",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3 ${CLAUDE_PLUGIN_ROOT}/scripts/guard-protected.py",
+            "timeout": 5
+          }
+        ]
+      }
+    ]
+  }
+}

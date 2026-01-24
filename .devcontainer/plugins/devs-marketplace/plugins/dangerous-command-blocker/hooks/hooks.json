@@ -1,0 +1,17 @@
+{
+  "description": "Block dangerous bash commands before execution",
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3 ${CLAUDE_PLUGIN_ROOT}/scripts/block-dangerous.py",
+            "timeout": 5
+          }
+        ]
+      }
+    ]
+  }
+}

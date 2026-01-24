@@ -1,0 +1,7 @@
+{
+  "$schema": "https://anthropic.com/claude-code/plugin.schema.json",
+  "name": "notify-hook",
+  "description": "Desktop notifications and audio chime when Claude finishes responding",
+  "version": "1.0.0",
+  "category": "productivity"
+}

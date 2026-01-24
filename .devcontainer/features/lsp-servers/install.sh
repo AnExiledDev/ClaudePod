@@ -1,18 +1,20 @@
 #!/bin/bash
 # LSP Servers for Claude Code
-# Installs pyright and typescript-language-server binaries
+# Installs pyright, typescript-language-server, and gopls binaries
 
 set -euo pipefail
 
 PYRIGHT_VERSION="${PYRIGHTVERSION:-latest}"
 TSLSP_VERSION="${TYPESCRIPTLSPVERSION:-latest}"
 TS_VERSION="${TYPESCRIPTVERSION:-latest}"
+GOPLS_VERSION="${GOPLSVERSION:-latest}"
 USERNAME="${USERNAME:-automatic}"
 
 echo "[lsp-servers] Starting installation..."
 echo "[lsp-servers] Pyright version: ${PYRIGHT_VERSION}"
 echo "[lsp-servers] TypeScript LSP version: ${TSLSP_VERSION}"
 echo "[lsp-servers] TypeScript version: ${TS_VERSION}"
+echo "[lsp-servers] gopls version: ${GOPLS_VERSION}"
 
 # Source nvm if available
 if [ -f /usr/local/share/nvm/nvm.sh ]; then
@@ -73,6 +75,22 @@ install_npm_package "typescript" "typescript" "${TS_VERSION}"
 # Install TypeScript Language Server
 install_npm_package "typescript-language-server" "typescript-language-server" "${TSLSP_VERSION}"
 
+# Install gopls (Go LSP) - uses go install since it's a Go package
+echo "[lsp-servers] Installing gopls..."
+if command -v go &>/dev/null; then
+    if [ "${GOPLS_VERSION}" = "latest" ]; then
+        go install "golang.org/x/tools/gopls@latest" || {
+            echo "[lsp-servers] WARNING: Failed to install gopls"
+        }
+    else
+        go install "golang.org/x/tools/gopls@${GOPLS_VERSION}" || {
+            echo "[lsp-servers] WARNING: Failed to install gopls"
+        }
+    fi
+else
+    echo "[lsp-servers] WARNING: Go not available, skipping gopls"
+fi
+
 # Verify installations
 echo ""
 echo "[lsp-servers] Verifying installations..."
@@ -87,6 +105,12 @@ if command -v typescript-language-server &>/dev/null; then
     echo "[lsp-servers] typescript-language-server: $(typescript-language-server --version 2>/dev/null || echo 'installed')"
 else
     echo "[lsp-servers] WARNING: typescript-language-server not found in PATH"
+fi
+
+if command -v gopls &>/dev/null; then
+    echo "[lsp-servers] gopls: $(gopls version 2>/dev/null | head -1 || echo 'installed')"
+else
+    echo "[lsp-servers] WARNING: gopls not found in PATH (Go may not be installed)"
 fi
 
 echo "[lsp-servers] Installation complete"
