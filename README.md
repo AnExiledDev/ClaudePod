@@ -1,7 +1,7 @@
 # CodeForge DevContainer
 
 [![License: GPL-3.0](https://img.shields.io/badge/License-GPL%203.0-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
-[![npm version](https://img.shields.io/npm/v/codeforge.svg)](https://www.npmjs.com/package/codeforge)
+[![npm version](https://img.shields.io/npm/v/codeforge-dev.svg)](https://www.npmjs.com/package/codeforge-dev)
 
 A curated development environment optimized for AI-powered coding with Claude Code. CodeForge comes pre-configured with language servers, code intelligence tools, and official Anthropic plugins to streamline your development workflow.
 
@@ -10,7 +10,7 @@ A curated development environment optimized for AI-powered coding with Claude Co
 Add CodeForge to any project:
 
 ```bash
-npx codeforge
+npx codeforge-dev
 ```
 
 This copies the `.devcontainer/` directory to your project. Then open in VS Code and select "Reopen in Container".
@@ -18,19 +18,19 @@ This copies the `.devcontainer/` directory to your project. Then open in VS Code
 ### Options
 
 ```bash
-npx codeforge --force    # Overwrite existing .devcontainer directory
-npx codeforge -f         # Short form
+npx codeforge-dev --force    # Overwrite existing .devcontainer directory
+npx codeforge-dev -f         # Short form
 ```
 
 ### Alternative Install Methods
 
 ```bash
 # Install globally
-npm install -g codeforge
-codeforge
+npm install -g codeforge-dev
+codeforge-dev
 
 # Run specific version
-npx codeforge@1.2.3
+npx codeforge-dev@1.2.3
 ```
 
 ## Prerequisites
