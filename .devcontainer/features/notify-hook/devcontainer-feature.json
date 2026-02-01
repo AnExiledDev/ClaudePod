@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "name": "Claude Code Notification Hook",
   "description": "Desktop notifications and audio chime when Claude finishes responding",
-  "documentationURL": "https://github.com/AnExiledDev/ClaudePod",
+  "documentationURL": "https://github.com/AnExiledDev/CodeForge",
   "options": {
     "enableBell": {
       "type": "boolean",

@@ -1,5 +1,5 @@
 {
-  "name": "ClaudePod - ${localWorkspaceFolderBasename}",
+  "name": "CodeForge - ${localWorkspaceFolderBasename}",
   "image": "mcr.microsoft.com/devcontainers/python:3.14",
 
   "workspaceFolder": "/workspaces",
@@ -8,7 +8,8 @@
   "remoteEnv": {
     "WORKSPACE_ROOT": "/workspaces",
     "CLAUDE_CONFIG_DIR": "/workspaces/.claude",
-    "GH_CONFIG_DIR": "/workspaces/.gh"
+    "GH_CONFIG_DIR": "/workspaces/.gh",
+    "TMPDIR": "/workspaces/.tmp"
   },
 
   "overrideFeatureInstallOrder": [
@@ -17,6 +18,7 @@
     "ghcr.io/devcontainers/features/docker-outside-of-docker",
     "ghcr.io/devcontainers-extra/features/uv",
     "ghcr.io/devcontainers/features/go",
+    "ghcr.io/rails/devcontainer/features/bun",
     "ghcr.io/anthropics/devcontainer-features/claude-code",
     "./features/agent-browser",
     "./features/claude-monitor",
@@ -40,6 +42,7 @@
     },
     "ghcr.io/devcontainers-extra/features/uv:1": {},
     "ghcr.io/devcontainers/features/go:1": {},
+    "ghcr.io/rails/devcontainer/features/bun:1.0.2": {},
     "ghcr.io/anthropics/devcontainer-features/claude-code:1": {},
     "./features/ccusage": {
       "version": "latest",
@@ -73,11 +76,19 @@
     "vscode": {
       "settings": {
         "terminal.integrated.defaultProfile.linux": "bash",
-        "terminal.integrated.enableBell": true
+        "terminal.integrated.enableBell": true,
+        "remote.extensionKind": {
+          "wenbopan.vscode-terminal-osc-notifier": ["ui"]
+        }
       },
       "extensions": [
         "wenbopan.vscode-terminal-osc-notifier"
       ]
     }
-  }
+  },
+
+  "runArgs": [
+    "--memory=3g",
+    "--memory-swap=3g"
+  ]
 }

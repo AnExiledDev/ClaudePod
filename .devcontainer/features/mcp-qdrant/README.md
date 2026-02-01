@@ -471,4 +471,4 @@ MIT License - See repository for details.
 
 ---
 
-**Part of AgentPod** - Curated DevContainer Features for AI Coding Agents
+**Part of CodeForge** - Curated DevContainer Features for AI Coding Agents

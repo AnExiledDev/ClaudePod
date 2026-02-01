@@ -5,7 +5,7 @@ const path = require('path');
 const { copyDirectory, main } = require('./setup.js');
 
 function runTests() {
-  console.log('🧪 Running ClaudePod package tests...\n');
+  console.log('🧪 Running CodeForge package tests...\n');
 
   // Test 1: copyDirectory function exists
   console.log('✓ Test 1: copyDirectory function exists');

@@ -1,5 +1,7 @@
 {
-  "cleanupPeriodDays": 360,
+  "cleanupPeriodDays": 60,
+  "autoCompact": true,
+  "alwaysThinkingEnabled": true,
   "env": {
     "ANTHROPIC_MODEL": "claude-opus-4-5-20251101",
     "CLAUDE_CODE_SUBAGENT_MODEL": "claude-opus-4-5-20251101",
@@ -14,9 +16,10 @@
     "MAX_THINKING_TOKENS": "63999",
     "MCP_TIMEOUT": "120000",
     "MCP_TOOL_TIMEOUT": "30000",
-    "CLAUDE_AUTOCOMPACT_PCT_OVERRIDE": 80,
+    "CLAUDE_AUTOCOMPACT_PCT_OVERRIDE": 95,
     "CLAUDE_CODE_SHELL": "zsh",
-    "FORCE_AUTOUPDATE_PLUGINS": true
+    "FORCE_AUTOUPDATE_PLUGINS": true,
+    "ENABLE_TOOL_SEARCH": "auto:5"
   },
   "includeCoAuthoredBy": false,
   "permissions": {

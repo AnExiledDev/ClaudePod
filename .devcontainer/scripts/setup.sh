@@ -1,5 +1,5 @@
 #!/bin/bash
-# Master setup script for ClaudePod devcontainer
+# Master setup script for CodeForge devcontainer
 
 set -e
 
@@ -26,7 +26,7 @@ export CLAUDE_CONFIG_DIR CONFIG_SOURCE_DIR SETUP_CONFIG SETUP_ALIASES OVERWRITE_
 
 
 echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
-echo "  ClaudePod Setup"
+echo "  CodeForge Setup"
 echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
 echo ""
 

@@ -24,7 +24,7 @@ CLAUDE_FUNCTION='_claude_with_config() {
         echo "[claude] Created $LOCAL_SETTINGS from default"
     fi
 
-    command claude --system-prompt-file "$LOCAL_PROMPT" --dangerously-skip-permissions "$@"
+    command claude --system-prompt-file "$LOCAL_PROMPT" --permission-mode plan --allow-dangerously-skip-permissions "$@"
 }
 
 # cc: shorthand for claude with config

@@ -1,16 +1,16 @@
-# ClaudePod DevContainer
+# CodeForge DevContainer
 
 [![License: GPL-3.0](https://img.shields.io/badge/License-GPL%203.0-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
-[![npm version](https://img.shields.io/npm/v/claudepod.svg)](https://www.npmjs.com/package/claudepod)
+[![npm version](https://img.shields.io/npm/v/codeforge.svg)](https://www.npmjs.com/package/codeforge)
 
-A curated development environment optimized for AI-powered coding with Claude Code. ClaudePod comes pre-configured with language servers, code intelligence tools, and official Anthropic plugins to streamline your development workflow.
+A curated development environment optimized for AI-powered coding with Claude Code. CodeForge comes pre-configured with language servers, code intelligence tools, and official Anthropic plugins to streamline your development workflow.
 
 ## Installation
 
-Add ClaudePod to any project:
+Add CodeForge to any project:
 
 ```bash
-npx claudepod
+npx codeforge
 ```
 
 This copies the `.devcontainer/` directory to your project. Then open in VS Code and select "Reopen in Container".
@@ -18,19 +18,19 @@ This copies the `.devcontainer/` directory to your project. Then open in VS Code
 ### Options
 
 ```bash
-npx claudepod --force    # Overwrite existing .devcontainer directory
-npx claudepod -f         # Short form
+npx codeforge --force    # Overwrite existing .devcontainer directory
+npx codeforge -f         # Short form
 ```
 
 ### Alternative Install Methods
 
 ```bash
 # Install globally
-npm install -g claudepod
-claudepod
+npm install -g codeforge
+codeforge
 
 # Run specific version
-npx claudepod@1.2.3
+npx codeforge@1.2.3
 ```
 
 ## Prerequisites
@@ -224,7 +224,7 @@ The default system prompt is in `.devcontainer/config/main-system-prompt.md`. Ov
 
 ## Custom Features
 
-ClaudePod includes several custom devcontainer features:
+CodeForge includes several custom devcontainer features:
 
 | Feature | Description |
 |---------|-------------|
@@ -248,8 +248,8 @@ ClaudePod includes several custom devcontainer features:
 ### Testing Locally
 
 ```bash
-git clone https://github.com/AnExiledDev/ClaudePod.git
-cd ClaudePod
+git clone https://github.com/AnExiledDev/CodeForge.git
+cd CodeForge
 npm test
 ```
 

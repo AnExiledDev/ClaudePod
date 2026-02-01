@@ -6,6 +6,7 @@ echo "[setup-plugins] Installing plugins..."
 # --- Official Anthropic Plugins ---
 OFFICIAL_PLUGINS=(
     "frontend-design@claude-plugins-official"
+    "svelte@sveltejs/mcp"
 )
 
 for plugin in "${OFFICIAL_PLUGINS[@]}"; do
@@ -20,6 +21,28 @@ done
 # --- Local Marketplace Plugins ---
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 MARKETPLACE_PATH="${SCRIPT_DIR}/../plugins/devs-marketplace"
+
+# Load PLUGIN_BLACKLIST from .env if not already set in environment
+ENV_FILE="${SCRIPT_DIR}/../.env"
+if [ -z "${PLUGIN_BLACKLIST+x}" ] && [ -f "$ENV_FILE" ]; then
+    PLUGIN_BLACKLIST=$(grep -E '^PLUGIN_BLACKLIST=' "$ENV_FILE" | cut -d'=' -f2- | tr -d '"')
+fi
+
+# Parse blacklist into array
+IFS=',' read -ra BLACKLIST <<< "${PLUGIN_BLACKLIST:-}"
+
+# Helper function to check if plugin is blacklisted
+is_blacklisted() {
+    local plugin_name="$1"
+    for blocked in "${BLACKLIST[@]}"; do
+        # Trim whitespace and compare
+        blocked="${blocked// /}"
+        if [ "$plugin_name" = "$blocked" ]; then
+            return 0
+        fi
+    done
+    return 1
+}
 
 # Add local marketplace (if not already added)
 if ! claude plugin marketplace list 2>/dev/null | grep -q "devs-marketplace"; then
@@ -38,6 +61,10 @@ if [ -f "$MARKETPLACE_JSON" ]; then
         echo "[setup-plugins] WARNING: No plugins found in marketplace.json"
     else
         for plugin in $PLUGINS; do
+            if is_blacklisted "$plugin"; then
+                echo "[setup-plugins] Skipping $plugin (blacklisted)"
+                continue
+            fi
             echo "[setup-plugins] Installing $plugin from devs-marketplace..."
             if claude plugin install "${plugin}@devs-marketplace" 2>/dev/null; then
                 echo "[setup-plugins] Installed: $plugin"

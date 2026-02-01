@@ -1,4 +1,4 @@
-# AgentPod DevContainer Features
+# CodeForge DevContainer Features
 
 This directory contains DevContainer Features for AI coding agent environments. These features follow the [DevContainer Features specification](https://containers.dev/implementors/features/) and can be published to OCI registries for distribution.
 
@@ -50,7 +50,7 @@ To test a feature locally before publishing:
 Features will be published to GitHub Container Registry (GHCR):
 
 ```
-ghcr.io/yourorg/agentpod-features/feature-name:1
+ghcr.io/yourorg/codeforge-features/feature-name:1
 ```
 
 **Publishing workflow** (future):
@@ -63,7 +63,7 @@ ghcr.io/yourorg/agentpod-features/feature-name:1
 ### Granularity
 - **One feature = One tool/service**
 - Bundle only if tools are always used together
-- See [AGENTPOD_ARCHITECTURE.md](../../AGENTPOD_ARCHITECTURE.md) for guidance
+- See project README for guidance
 
 ### Options
 - Use clear, descriptive option names
@@ -85,7 +85,7 @@ ghcr.io/yourorg/agentpod-features/feature-name:1
 
 ## Migration from Modules
 
-ClaudePod modules are being converted to DevContainer Features:
+CodeForge modules are being converted to DevContainer Features:
 
 | Old Module | New Feature | Status |
 |-----------|-------------|---------|
@@ -101,11 +101,11 @@ ClaudePod modules are being converted to DevContainer Features:
 - [DevContainer Features Specification](https://containers.dev/implementors/features/)
 - [Feature Authoring Guide](https://containers.dev/guide/author-a-feature)
 - [Feature Best Practices](https://containers.dev/guide/feature-authoring-best-practices)
-- [AgentPod Architecture](../../AGENTPOD_ARCHITECTURE.md)
+- [CodeForge Documentation](../../README.md)
 
 ## Contributing
 
-Features are part of the AgentPod project. See main repository for contribution guidelines.
+Features are part of the CodeForge project. See main repository for contribution guidelines.
 
 ---
 

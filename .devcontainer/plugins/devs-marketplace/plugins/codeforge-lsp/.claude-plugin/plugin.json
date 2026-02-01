@@ -1,0 +1,7 @@
+{
+  "name": "codeforge-lsp",
+  "description": "LSP servers for CodeForge (Python, TypeScript, Go)",
+  "author": {
+    "name": "AnExiledDev"
+  }
+}

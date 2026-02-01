@@ -1,7 +1,0 @@
-{
-  "name": "claudepod-lsp",
-  "description": "LSP servers for ClaudePod (Python, TypeScript, Go)",
-  "author": {
-    "name": "AnExiledDev"
-  }
-}

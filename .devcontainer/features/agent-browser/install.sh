@@ -58,6 +58,13 @@ agent-browser install --with-deps 2>/dev/null || {
     agent-browser install 2>/dev/null || true
 }
 
+# Install Playwright browsers and dependencies
+echo "[agent-browser] Installing Playwright browsers..."
+npx playwright install --with-deps 2>/dev/null || {
+    echo "[agent-browser] WARNING: Playwright install with deps failed, trying without --with-deps"
+    npx playwright install 2>/dev/null || true
+}
+
 echo "[agent-browser] Installed: $(agent-browser --version 2>/dev/null || echo 'unknown')"
 echo "[agent-browser] Installation complete"
 echo ""

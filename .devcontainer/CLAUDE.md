@@ -1,6 +1,6 @@
 # DevContainer Development Guide
 
-ClaudePod devcontainer for AI-assisted development with Claude Code.
+CodeForge devcontainer for AI-assisted development with Claude Code.
 
 ## Directory Structure
 
@@ -80,7 +80,7 @@ Scripts in `./scripts/` run via `postStartCommand`:
 Automatically installed on container start:
 
 - `frontend-design@claude-plugins-official` (skill)
-- `claudepod-lsp@devs-marketplace` (LSP for Python + TypeScript/JavaScript)
+- `codeforge-lsp@devs-marketplace` (LSP for Python + TypeScript/JavaScript)
 
 ### Local Marketplace
 
@@ -91,7 +91,7 @@ plugins/devs-marketplace/
 ├── .claude-plugin/
 │   └── marketplace.json      # Marketplace manifest
 └── plugins/
-    └── claudepod-lsp/        # Combined LSP plugin
+    └── codeforge-lsp/        # Combined LSP plugin
         └── .claude-plugin/
             └── plugin.json
 ```

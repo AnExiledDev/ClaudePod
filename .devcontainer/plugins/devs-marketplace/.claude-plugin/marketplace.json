@@ -1,16 +1,16 @@
 {
   "$schema": "https://anthropic.com/claude-code/marketplace.schema.json",
   "name": "devs-marketplace",
-  "description": "ClaudePod plugin marketplace for development tools",
+  "description": "CodeForge plugin marketplace for development tools",
   "owner": {
     "name": "AnExiledDev"
   },
   "plugins": [
     {
-      "name": "claudepod-lsp",
-      "description": "LSP servers for ClaudePod (Python, TypeScript, Go)",
+      "name": "codeforge-lsp",
+      "description": "LSP servers for CodeForge (Python, TypeScript, Go)",
       "version": "1.0.0",
-      "source": "./plugins/claudepod-lsp",
+      "source": "./plugins/codeforge-lsp",
       "category": "development",
       "lspServers": {
         "pyright": {
@@ -93,6 +93,13 @@
       "description": "Auto-lints files after editing (pyright for Python)",
       "version": "1.0.0",
       "source": "./plugins/auto-linter",
+      "category": "development"
+    },
+    {
+      "name": "codedirective-skills",
+      "description": "Coding standards and skills for the CodeDirective project",
+      "version": "1.0.0",
+      "source": "./plugins/codedirective-skills",
       "category": "development"
     }
   ]

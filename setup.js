@@ -31,7 +31,7 @@ function main() {
   const devcontainerSrc = path.join(packageDir, '.devcontainer');
   const devcontainerDest = path.join(currentDir, '.devcontainer');
 
-  console.log('🚀 Setting up ClaudePod DevContainer...');
+  console.log('🚀 Setting up CodeForge DevContainer...');
 
   // Check if .devcontainer already exists
   if (fs.existsSync(devcontainerDest)) {
@@ -55,7 +55,7 @@ function main() {
     // Copy .devcontainer directory
     copyDirectory(devcontainerSrc, devcontainerDest);
     
-    console.log('✅ ClaudePod DevContainer configuration installed!');
+    console.log('✅ CodeForge DevContainer configuration installed!');
     console.log('');
     console.log('🔧 Next steps:');
     console.log('   1. Open this folder in VS Code');

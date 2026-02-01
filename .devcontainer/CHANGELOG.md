@@ -1,4 +1,4 @@
-# ClaudePod Devcontainer Changelog
+# CodeForge Devcontainer Changelog
 
 ## [v1.3.1] - 2025-01-24
 
@@ -62,7 +62,7 @@
   - Screenshots and PDF capture
   - Element interaction and cookie management
 - **Go LSP (gopls)**: Full Go language server support
-  - Added `gopls` to claudepod-lsp plugin configuration
+  - Added `gopls` to codeforge-lsp plugin configuration
   - Added `goplsVersion` option to lsp-servers feature
   - Supports `.go`, `.mod`, `.sum` file extensions
 - **Go language**: Added `ghcr.io/devcontainers/features/go:1` feature
@@ -74,7 +74,7 @@
   - `/ticket:review-commit` - Thorough code review with requirements verification
   - `/ticket:create-pr` - Create PRs with aggressive security/architecture review
 - **notify-hook plugin**: Claude Code hook integration for completion notifications
-- **claudepod-lsp plugin.json**: Proper plugin structure for LSP servers
+- **codeforge-lsp plugin.json**: Proper plugin structure for LSP servers
 
 #### Commands & Aliases
 - **ccraw alias**: Runs vanilla Claude Code without any config
@@ -91,7 +91,7 @@
   - Uses `command claude` internally to call the actual binary
   - Both `claude` and `cc` auto-setup `.claude/system-prompt.md` and `.claude/settings.json`
 - **Container name**: Now includes project folder name for multi-project clarity
-  - Format: `ClaudePod - ${localWorkspaceFolderBasename}`
+  - Format: `CodeForge - ${localWorkspaceFolderBasename}`
 - **setup-lsp.sh**: Replaced hard-coded plugin list with dynamic discovery
   - Now reads all plugins from `marketplace.json` using `jq`
   - Automatically installs new plugins when added to marketplace
@@ -129,7 +129,7 @@
     │   ├── .claude-plugin/plugin.json
     │   ├── hooks/hooks.json
     │   └── scripts/lint-file.py
-    ├── claudepod-lsp/
+    ├── codeforge-lsp/
     │   └── .claude-plugin/plugin.json
     ├── dangerous-command-blocker/
     │   ├── .claude-plugin/plugin.json

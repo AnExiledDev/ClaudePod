@@ -1,4 +1,4 @@
-# ClaudePod Git Ignore
+# CodeForge Git Ignore
 
 # Environment files with API keys
 .env
@@ -61,6 +61,18 @@ node_modules/
 
 # Work in progress
 review-cli/
+
+# CodeDirective project (separate product)
+code-directive/
+
+# Research & working files (not part of CodeForge)
+article/
+claude-research/
+dashboard/
+simple-review/
+
+# Unfinished plugins
+.devcontainer/plugins/devs-marketplace/plugins/workflow-enhancer/
 
 # All hidden directories except devcontainer
 .*

@@ -1,10 +1,10 @@
 {
-  "name": "claudepod",
+  "name": "codeforge",
   "version": "1.3.1",
   "description": "Complete development container that sets up Claude Code with modular devcontainer features, modern dev tools, and persistent configurations. Drop it into any project and get a production-ready AI development environment in minutes.",
   "main": "setup.js",
   "bin": {
-    "claudepod": "setup.js"
+    "codeforge": "setup.js"
   },
   "scripts": {
     "test": "node test.js"
@@ -35,10 +35,10 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/AnExiledDev/ClaudePod.git"
+    "url": "git+https://github.com/AnExiledDev/CodeForge.git"
   },
-  "homepage": "https://github.com/AnExiledDev/ClaudePod#readme",
+  "homepage": "https://github.com/AnExiledDev/CodeForge#readme",
   "bugs": {
-    "url": "https://github.com/AnExiledDev/ClaudePod/issues"
+    "url": "https://github.com/AnExiledDev/CodeForge/issues"
   }
 }

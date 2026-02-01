@@ -40,7 +40,7 @@ Installs [tree-sitter](https://tree-sitter.github.io/tree-sitter/) parsing libra
 {
   "features": {
     "./features/tree-sitter": {
-      "grammars": "javascript,typescript,python,rust,go,json"
+      "grammars": "javascript,typescript,python,rust,json"
     }
   }
 }
@@ -95,7 +95,7 @@ Installs [tree-sitter](https://tree-sitter.github.io/tree-sitter/) parsing libra
 Common grammars available via npm/pip:
 
 - `javascript`, `typescript`, `tsx`
-- `python`, `rust`, `go`, `c`, `cpp`
+- `python`, `rust`, `c`, `cpp`
 - `java`, `ruby`, `php`, `swift`
 - `json`, `yaml`, `toml`, `html`, `css`
 - `bash`, `markdown`, `regex`

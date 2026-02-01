@@ -1,9 +1,9 @@
-# ClaudePod DevContainer
+# CodeForge DevContainer
 
 [![License: GPL-3.0](https://img.shields.io/badge/License-GPL%203.0-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
-[![npm version](https://img.shields.io/npm/v/claudepod.svg)](https://www.npmjs.com/package/claudepod)
+[![npm version](https://img.shields.io/npm/v/codeforge.svg)](https://www.npmjs.com/package/codeforge)
 
-A curated development environment optimized for AI-powered coding with Claude Code. ClaudePod comes pre-configured with language servers, code intelligence tools, and official Anthropic plugins to streamline your development workflow.
+A curated development environment optimized for AI-powered coding with Claude Code. CodeForge comes pre-configured with language servers, code intelligence tools, and official Anthropic plugins to streamline your development workflow.
 
 ## Prerequisites
 
@@ -197,7 +197,7 @@ The default system prompt is in `.devcontainer/config/main-system-prompt.md`. Ov
 
 ## Custom Features
 
-ClaudePod includes several custom devcontainer features:
+CodeForge includes several custom devcontainer features:
 
 | Feature | Description |
 |---------|-------------|
