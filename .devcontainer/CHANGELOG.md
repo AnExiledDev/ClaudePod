@@ -1,5 +1,67 @@
 # CodeForge Devcontainer Changelog
 
+## [v1.4.0] - 2026-02-01
+
+### Breaking
+
+- **Package rename**: `claudepod` → `codeforge-dev` on npm. Install via `npx codeforge-dev`
+- **Full rebrand**: All references renamed from ClaudePod/claudepod to CodeForge/codeforge
+
+### Added
+
+#### Plugins
+- **codedirective-skills plugin**: 9 coding reference skills for the CodeDirective tech stack
+  - `fastapi` - Routing, middleware, SSE, Pydantic models
+  - `pydantic-ai` - Agents, tools, models, streaming
+  - `svelte5` - Runes, reactivity, components, routing, dnd, LayerCake, AI SDK
+  - `sqlite` - Python/JS patterns, schema, pragmas, advanced queries
+  - `docker` - Dockerfile patterns, Compose services
+  - `docker-py` - Container lifecycle, resources, security
+  - `claude-code-headless` - CLI flags, output, SDK/MCP
+  - `testing` - FastAPI and Svelte testing patterns
+  - `skill-building` - Meta-skill for authoring skills
+- **codeforge-lsp plugin**: Replaces `claudepod-lsp` with identical functionality
+- **Svelte MCP plugin**: Added `svelte@sveltejs/mcp` to official plugins
+- **Plugin blacklist system**: `PLUGIN_BLACKLIST` env var in `.env` to skip plugins during auto-install
+  - Parsed by `is_blacklisted()` helper in `setup-plugins.sh`
+  - Default: `workflow-enhancer` blacklisted
+
+#### System Prompt
+- **`<execution_discipline>`**: Verify before assuming, read before writing, instruction fidelity, verify after writing, no silent deviations
+- **`<professional_objectivity>`**: Prioritize technical accuracy over agreement, direct measured language
+- **`<structural_search>`**: ast-grep and tree-sitter usage guidance with when-to-use-which
+- **Scope discipline**: Modify only what the task requires, trust internal code, prefer inline clarity
+- **Continuation sessions**: Re-read source files after compaction, verify state before changes
+- **Brevity additions**: No problem restatement, no filler/narrative, no time estimates
+
+#### DevContainer
+- **Bun runtime**: Added `ghcr.io/rails/devcontainer/features/bun:1.0.2`
+- **Playwright browsers**: Installed via `npx playwright install --with-deps` in agent-browser feature
+- **Memory cap**: Container limited to 3GB via `--memory=3g --memory-swap=3g`
+- **TMPDIR**: Set to `/workspaces/.tmp`
+- **VS Code remote extension**: `wenbopan.vscode-terminal-osc-notifier` configured as UI extension
+
+### Changed
+
+- **Permission model**: `--dangerously-skip-permissions` → `--permission-mode plan --allow-dangerously-skip-permissions`
+- **Settings**: `autoCompact: true`, `alwaysThinkingEnabled: true`
+- **Autocompact threshold**: 80% → 95%
+- **Cleanup period**: 360 days → 60 days
+- **Tool search**: Added `ENABLE_TOOL_SEARCH: "auto:5"`
+- **Tree-sitter**: Removed Go grammar from defaults
+- **Ticket-workflow commands**: Renamed `ticket:` → `ticket꞉` for cross-platform filesystem compatibility
+- **notify-hook**: Added empty `matcher` field to hooks.json schema
+
+### Removed
+
+- **claudepod-lsp plugin**: Replaced by `codeforge-lsp`
+
+### Gitignore
+
+- Added `code-directive/`, `article/`, `claude-research/`, `dashboard/`, `simple-review/`, `workflow-enhancer/`
+
+---
+
 ## [v1.3.1] - 2025-01-24
 
 ### Fixed
