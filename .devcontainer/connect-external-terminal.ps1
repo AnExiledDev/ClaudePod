@@ -73,14 +73,18 @@ Write-Host "======================================"
 Write-Host ""
 
 # Connect to container with tmux as vscode user (where aliases are defined)
-# If session exists, reattach. Otherwise create in /workspaces and auto-run cc.
-docker exec -it --user vscode $CONTAINER_ID bash -c "
+# Pass UTF-8 locale so tmux renders Unicode correctly (not as underscores)
+docker exec -it `
+  -e LANG=en_US.UTF-8 `
+  -e LC_ALL=en_US.UTF-8 `
+  --user vscode $CONTAINER_ID bash -c "
+  export LANG=en_US.UTF-8 LC_ALL=en_US.UTF-8
   if tmux has-session -t '$TMUX_SESSION' 2>/dev/null; then
-    tmux attach-session -t '$TMUX_SESSION'
+    tmux -u attach-session -t '$TMUX_SESSION'
   else
-    tmux new-session -d -s '$TMUX_SESSION' -c /workspaces
+    tmux -u new-session -d -s '$TMUX_SESSION' -c /workspaces
     sleep 0.5
     tmux send-keys -t '$TMUX_SESSION' 'cc' Enter
-    tmux attach-session -t '$TMUX_SESSION'
+    tmux -u attach-session -t '$TMUX_SESSION'
   fi
 "

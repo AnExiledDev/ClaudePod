@@ -54,6 +54,11 @@ for rc in ~/.bashrc ~/.zshrc; do
         if ! grep -q 'export CLAUDE_CONFIG_DIR=' "$rc" 2>/dev/null; then
             echo "export CLAUDE_CONFIG_DIR=\"${CLAUDE_CONFIG_DIR}\"" >> "$rc"
         fi
+        # Export UTF-8 locale so tmux renders Unicode correctly (docker exec doesn't inherit locale)
+        if ! grep -q 'export LANG=en_US.UTF-8' "$rc" 2>/dev/null; then
+            echo 'export LANG=en_US.UTF-8' >> "$rc"
+            echo 'export LC_ALL=en_US.UTF-8' >> "$rc"
+        fi
         echo "$ALIAS_CC" >> "$rc"
         echo "$ALIAS_CLAUDE" >> "$rc"
         echo "$ALIAS_CCRAW" >> "$rc"
