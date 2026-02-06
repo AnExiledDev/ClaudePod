@@ -1,11 +1,19 @@
 # CodeForge Devcontainer Changelog
 
+## [v1.5.7] - 2026-02-06
+
+### Fixed
+
+- **tmux linked sessions**: Opening multiple terminals no longer mirrors the same view. Uses `new-session -t claude-teams` (linked session) instead of `new-session -A` (shared attach). Each terminal gets independent window navigation while sharing the same window pool for Agent Teams panes
+
+---
+
 ## [v1.5.6] - 2026-02-06
 
 ### Added
 
 - **tmux as default terminal**: All terminals (VS Code, WezTerm, docker exec) now auto-enter tmux `claude-teams` session. Ensures `$TMUX` is always set so Agent Teams `teammateMode: "auto"` uses split panes
-  - VS Code: Added `tmux` terminal profile as default in `devcontainer.json` (`tmux -u new-session -A -s claude-teams`)
+  - VS Code: Added `tmux` terminal profile as default in `devcontainer.json`
   - All shells: Auto-enter tmux block in `.bashrc`/`.zshrc` via `setup-aliases.sh` (guarded: skips if already in tmux, non-interactive, or tmux not installed)
   - Plain `bash` profile kept as alternative in VS Code
 

@@ -66,7 +66,11 @@ for rc in ~/.bashrc ~/.zshrc; do
 
 # Auto-enter tmux for Agent Teams split-pane support
 if [ -z "$TMUX" ] && [ -n "$PS1" ] && command -v tmux &>/dev/null; then
-    exec tmux -u new-session -A -s claude-teams
+    if tmux has-session -t claude-teams 2>/dev/null; then
+        exec tmux -u new-session -t claude-teams
+    else
+        exec tmux -u new-session -s claude-teams
+    fi
 fi
 TMUX_BLOCK
         fi
