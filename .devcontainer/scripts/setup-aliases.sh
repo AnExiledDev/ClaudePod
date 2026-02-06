@@ -47,7 +47,7 @@ for rc in ~/.bashrc ~/.zshrc; do
             sed -i '/alias specwright=/d' "$rc"
         fi
 
-        # --- Add environment and aliases ---
+        # --- Add environment, auto-tmux, and aliases ---
         echo "" >> "$rc"
         echo "# Claude Code environment and aliases (managed by setup-aliases.sh)" >> "$rc"
         # Export CLAUDE_CONFIG_DIR so it's available in all shells (not just VS Code remoteEnv)
@@ -58,6 +58,17 @@ for rc in ~/.bashrc ~/.zshrc; do
         if ! grep -q 'export LANG=en_US.UTF-8' "$rc" 2>/dev/null; then
             echo 'export LANG=en_US.UTF-8' >> "$rc"
             echo 'export LC_ALL=en_US.UTF-8' >> "$rc"
+        fi
+        # Auto-enter tmux for Agent Teams split-pane support
+        # Guards: not already in tmux, interactive shell only, tmux available
+        if ! grep -q 'Auto-enter tmux' "$rc" 2>/dev/null; then
+            cat >> "$rc" << 'TMUX_BLOCK'
+
+# Auto-enter tmux for Agent Teams split-pane support
+if [ -z "$TMUX" ] && [ -n "$PS1" ] && command -v tmux &>/dev/null; then
+    exec tmux -u new-session -A -s claude-teams
+fi
+TMUX_BLOCK
         fi
         echo "$ALIAS_CC" >> "$rc"
         echo "$ALIAS_CLAUDE" >> "$rc"

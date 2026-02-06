@@ -78,7 +78,16 @@
   "customizations": {
     "vscode": {
       "settings": {
-        "terminal.integrated.defaultProfile.linux": "bash",
+        "terminal.integrated.profiles.linux": {
+          "tmux": {
+            "path": "tmux",
+            "args": ["-u", "new-session", "-A", "-s", "claude-teams"]
+          },
+          "bash": {
+            "path": "bash"
+          }
+        },
+        "terminal.integrated.defaultProfile.linux": "tmux",
         "terminal.integrated.enableBell": true,
         "remote.extensionKind": {
           "wenbopan.vscode-terminal-osc-notifier": ["ui"]

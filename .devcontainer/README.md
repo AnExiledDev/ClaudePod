@@ -150,10 +150,7 @@ GitHub CLI credentials are automatically persisted across container rebuilds. Th
 
 ### The `cc` Command
 
-The `cc` command is a wrapper that:
-- Creates a project-local `.claude/` directory if missing
-- Copies default configuration files
-- Launches Claude Code with the project's system prompt
+The `cc` command is an alias that launches Claude Code with the project's system prompt and plan-mode permissions. All terminals (VS Code, WezTerm, docker exec) auto-enter a tmux `claude-teams` session for Agent Teams split-pane support.
 
 ```bash
 cc                    # Start Claude Code in current directory
@@ -216,8 +213,9 @@ CodeForge includes several custom devcontainer features:
 
 - **Authentication required**: Run `claude` once to authenticate before using `cc`
 - **Plan mode default**: The container starts in "plan" mode, which prompts for approval before making changes
-- **Project-local config**: The `cc` command creates `.claude/` in your current directory for project-specific settings
+- **Project-local config**: Config files are auto-copied to `.claude/` on container start via `setup-config.sh`
 - **GitHub auth persists**: Run `gh auth login` once; credentials survive container rebuilds (stored in `/workspaces/.gh/`)
+- **Terminals auto-enter tmux**: All interactive shells auto-enter the `claude-teams` tmux session for Agent Teams split panes. Use the `bash` terminal profile in VS Code if you need a plain shell
 
 ## Further Reading
 
