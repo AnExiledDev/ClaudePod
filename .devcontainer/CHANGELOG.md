@@ -1,5 +1,14 @@
 # CodeForge Devcontainer Changelog
 
+## [v1.5.2] - 2026-02-06
+
+### Fixed
+
+- **cc/claude aliases**: Converted from shell functions to simple aliases — functions were not reliably invoked across shell contexts (tmux, docker exec, external terminals), causing Claude to launch without config
+- **CLAUDE_CONFIG_DIR export**: Now exported in `.bashrc`/`.zshrc` directly, so credentials are found in all shells (not just VS Code terminals where `remoteEnv` applies)
+
+---
+
 ## [v1.5.0] - 2026-02-06
 
 ### Added
