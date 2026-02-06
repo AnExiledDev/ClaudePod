@@ -7,46 +7,65 @@ echo "Installing tmux for Claude Code Agent Teams..."
 apt-get update
 apt-get install -y tmux
 
-# Create a basic tmux config optimized for Claude Code teams
+# Install Catppuccin theme (shallow clone for fast builds)
+CATPPUCCIN_DIR="/usr/share/tmux/plugins/catppuccin"
+echo "Installing Catppuccin tmux theme..."
+mkdir -p "$(dirname "$CATPPUCCIN_DIR")"
+git clone --depth 1 -b v2.1.3 https://github.com/catppuccin/tmux.git "$CATPPUCCIN_DIR"
+# Remove .git to save space (we pinned the version, don't need history)
+rm -rf "$CATPPUCCIN_DIR/.git"
+
+# Create tmux config optimized for Claude Code teams + Catppuccin Mocha
 TMUX_CONF="/etc/tmux.conf"
 cat > "$TMUX_CONF" << 'EOF'
 # Claude Code Agent Teams - tmux configuration
+# Theme: Catppuccin Mocha
 
-# Enable mouse support for pane selection
+# ── Core Settings ──────────────────────────────────────────────
 set -g mouse on
-
-# Start window numbering at 1
 set -g base-index 1
 setw -g pane-base-index 1
-
-# Increase scrollback buffer
 set -g history-limit 10000
-
-# Reduce escape time for better responsiveness
 set -sg escape-time 10
+set -g focus-events on
+set -g renumber-windows on
 
-# Status bar configuration
-set -g status-style 'bg=#1e1e2e fg=#cdd6f4'
-set -g status-left '[#S] '
-set -g status-right '%H:%M '
-set -g status-left-length 20
-
-# Pane border styling
-set -g pane-border-style 'fg=#45475a'
-set -g pane-active-border-style 'fg=#89b4fa'
-
-# Window status
-setw -g window-status-current-style 'fg=#1e1e2e bg=#89b4fa bold'
-setw -g window-status-current-format ' #I:#W '
-setw -g window-status-style 'fg=#cdd6f4'
-setw -g window-status-format ' #I:#W '
-
-# Enable true color support
+# ── True Color Support ─────────────────────────────────────────
 set -g default-terminal "tmux-256color"
 set -ga terminal-overrides ",*256col*:Tc"
+set -ga terminal-overrides ",xterm-256color:RGB"
+
+# ── Catppuccin Theme ──────────────────────────────────────────
+set -g @catppuccin_flavor "mocha"
+
+# Window tabs: rounded style with Nerd Font icons
+set -g @catppuccin_window_status_style "rounded"
+set -g @catppuccin_window_text " #W"
+set -g @catppuccin_window_current_text " #W"
+set -g @catppuccin_window_flags "icon"
+set -g @catppuccin_window_number_position "left"
+
+# Pane borders: colored with active pane indicator
+set -g @catppuccin_pane_status_enabled "yes"
+set -g @catppuccin_pane_border_status "top"
+
+# Status bar background: transparent (inherit terminal bg)
+set -g @catppuccin_status_background "none"
+
+# Status bar: left side
+set -g status-left ""
+
+# Status bar: right side — session name + date/time
+set -g @catppuccin_date_time_text " %H:%M"
+set -g status-right "#{E:@catppuccin_status_session}"
+set -agF status-right "#{E:@catppuccin_status_date_time}"
+
+# Load Catppuccin (must come after all @catppuccin settings)
+run /usr/share/tmux/plugins/catppuccin/catppuccin.tmux
 EOF
 
 echo "tmux installed successfully"
 echo "  - Config: $TMUX_CONF"
+echo "  - Theme: Catppuccin Mocha"
 echo "  - Use 'tmux new -s claude-teams' to start a session"
 echo "  - Claude Code Agent Teams will auto-detect tmux when available"

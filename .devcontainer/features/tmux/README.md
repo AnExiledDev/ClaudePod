@@ -5,9 +5,11 @@ Installs tmux for Claude Code Agent Teams split-pane support.
 ## What This Provides
 
 - **tmux** terminal multiplexer for managing multiple terminal sessions
+- **Catppuccin Mocha** theme with rounded window tabs and Nerd Font icons
 - Pre-configured for Claude Code Agent Teams with optimized settings
 - Mouse support enabled for easy pane navigation
-- Clean status bar showing session info
+- True color support (works with WezTerm, iTerm2, and other modern terminals)
+- Transparent status bar background (inherits terminal theme)
 
 ## Claude Code Agent Teams Integration
 

@@ -1,6 +1,10 @@
 # CodeForge Devcontainer Changelog
 
-## [v1.5.2] - 2026-02-06
+## [v1.5.3] - 2026-02-06
+
+### Added
+
+- **Catppuccin Mocha tmux theme**: Replaced barebones tmux config with Catppuccin v2.1.3. Rounded window tabs, Nerd Font icons, transparent status bar, colored pane borders. Installed at build time via shallow git clone (~200KB, ~2s)
 
 ### Fixed
 
