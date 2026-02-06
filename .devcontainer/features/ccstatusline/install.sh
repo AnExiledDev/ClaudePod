@@ -94,10 +94,10 @@ CONFIG_JSON=$(jq -n '{
     globalBold: false,
     powerline: {
         enabled: true,
-        separators: [""],
+        separators: ["\ue0b0"],
         separatorInvertBackground: [true],
-        startCaps: [""],
-        endCaps: [""],
+        startCaps: ["\ue0b6"],
+        endCaps: ["\ue0b4"],
         autoAlign: false,
         theme: "monokai"
     },
