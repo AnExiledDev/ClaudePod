@@ -79,15 +79,15 @@
     "vscode": {
       "settings": {
         "terminal.integrated.profiles.linux": {
-          "tmux": {
-            "path": "bash",
-            "args": ["-c", "if tmux has-session -t claude-teams 2>/dev/null; then exec tmux -u new-session -t claude-teams; else exec tmux -u new-session -s claude-teams; fi"]
-          },
           "bash": {
             "path": "bash"
+          },
+          "Claude Teams (tmux)": {
+            "path": "bash",
+            "args": ["-c", "if tmux has-session -t claude-teams 2>/dev/null; then exec tmux -u new-session -t claude-teams; else exec tmux -u new-session -s claude-teams; fi"]
           }
         },
-        "terminal.integrated.defaultProfile.linux": "tmux",
+        "terminal.integrated.defaultProfile.linux": "bash",
         "terminal.integrated.enableBell": true,
         "remote.extensionKind": {
           "wenbopan.vscode-terminal-osc-notifier": ["ui"]

@@ -59,21 +59,6 @@ for rc in ~/.bashrc ~/.zshrc; do
             echo 'export LANG=en_US.UTF-8' >> "$rc"
             echo 'export LC_ALL=en_US.UTF-8' >> "$rc"
         fi
-        # Auto-enter tmux for Agent Teams split-pane support
-        # Guards: not already in tmux, interactive shell only, tmux available
-        if ! grep -q 'Auto-enter tmux' "$rc" 2>/dev/null; then
-            cat >> "$rc" << 'TMUX_BLOCK'
-
-# Auto-enter tmux for Agent Teams split-pane support
-if [ -z "$TMUX" ] && [ -n "$PS1" ] && command -v tmux &>/dev/null; then
-    if tmux has-session -t claude-teams 2>/dev/null; then
-        exec tmux -u new-session -t claude-teams
-    else
-        exec tmux -u new-session -s claude-teams
-    fi
-fi
-TMUX_BLOCK
-        fi
         echo "$ALIAS_CC" >> "$rc"
         echo "$ALIAS_CLAUDE" >> "$rc"
         echo "$ALIAS_CCRAW" >> "$rc"
