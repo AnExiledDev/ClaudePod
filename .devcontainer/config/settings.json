@@ -3,15 +3,14 @@
   "autoCompact": true,
   "alwaysThinkingEnabled": true,
   "env": {
-    "ANTHROPIC_MODEL": "claude-opus-4-5-20251101",
-    "CLAUDE_CODE_SUBAGENT_MODEL": "claude-opus-4-5-20251101",
-    "ANTHROPIC_DEFAULT_OPUS_MODEL": "claude-opus-4-5-20251101",
+    "ANTHROPIC_MODEL": "claude-opus-4-6",
+    "ANTHROPIC_DEFAULT_OPUS_MODEL": "claude-opus-4-6",
     "ANTHROPIC_DEFAULT_SONNET_MODEL": "claude-sonnet-4-5-20250929",
     "ANTHROPIC_DEFAULT_HAIKU_MODEL": "claude-haiku-4-5-20251001",
     "BASH_DEFAULT_TIMEOUT_MS": "240000",
     "BASH_MAX_TIMEOUT_MS": "600000",
     "CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC": "true",
-    "CLAUDE_CODE_MAX_OUTPUT_TOKENS": "64000",
+    "CLAUDE_CODE_MAX_OUTPUT_TOKENS": "128000",
     "MAX_MCP_OUTPUT_TOKENS": "10000",
     "MAX_THINKING_TOKENS": "63999",
     "MCP_TIMEOUT": "120000",
@@ -19,8 +18,13 @@
     "CLAUDE_AUTOCOMPACT_PCT_OVERRIDE": 95,
     "CLAUDE_CODE_SHELL": "zsh",
     "FORCE_AUTOUPDATE_PLUGINS": true,
-    "ENABLE_TOOL_SEARCH": "auto:5"
+    "ENABLE_TOOL_SEARCH": "auto:5",
+    "CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS": "1",
+    "CLAUDE_CODE_EFFORT_LEVEL": "high",
+    "CLAUDE_CODE_ENABLE_TASKS": "true"
   },
+  "teammateMode": "auto",
+  "effortLevel": "high",
   "includeCoAuthoredBy": false,
   "permissions": {
     "allow": [

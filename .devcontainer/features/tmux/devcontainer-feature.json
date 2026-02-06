@@ -1,0 +1,17 @@
+{
+  "id": "tmux",
+  "version": "1.0.0",
+  "name": "tmux Terminal Multiplexer",
+  "description": "Installs tmux for Claude Code Agent Teams split-pane support",
+  "documentationURL": "https://github.com/AnExiledDev/CodeForge",
+  "options": {
+    "version": {
+      "type": "string",
+      "description": "tmux version to install (or 'latest' for system package)",
+      "default": "latest"
+    }
+  },
+  "installsAfter": [
+    "ghcr.io/devcontainers/features/common-utils:2"
+  ]
+}

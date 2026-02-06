@@ -1,6 +1,6 @@
 {
   "name": "auto-formatter",
-  "description": "Auto-formats files after editing (black for Python, gofmt for Go)",
+  "description": "Batch-formats edited files at Stop (Black for Python, gofmt for Go, Biome for JS/TS/CSS)",
   "author": {
     "name": "AnExiledDev"
   }

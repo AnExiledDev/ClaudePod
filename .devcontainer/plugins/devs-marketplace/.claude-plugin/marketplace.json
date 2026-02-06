@@ -96,10 +96,10 @@
       "category": "development"
     },
     {
-      "name": "codedirective-skills",
+      "name": "code-directive",
       "description": "Coding standards and skills for the CodeDirective project",
       "version": "1.0.0",
-      "source": "./plugins/codedirective-skills",
+      "source": "./plugins/code-directive",
       "category": "development"
     }
   ]

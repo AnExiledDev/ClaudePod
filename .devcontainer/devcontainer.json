@@ -20,6 +20,7 @@
     "ghcr.io/devcontainers/features/go",
     "ghcr.io/rails/devcontainer/features/bun",
     "ghcr.io/anthropics/devcontainer-features/claude-code",
+    "./features/tmux",
     "./features/agent-browser",
     "./features/claude-monitor",
     "./features/ccusage",
@@ -27,6 +28,7 @@
     "./features/ast-grep",
     "./features/tree-sitter",
     "./features/lsp-servers",
+    "./features/biome",
     "./features/notify-hook"
   ],
 
@@ -41,9 +43,9 @@
       "moby": false
     },
     "ghcr.io/devcontainers-extra/features/uv:1": {},
-    "ghcr.io/devcontainers/features/go:1": {},
     "ghcr.io/rails/devcontainer/features/bun:1.0.2": {},
     "ghcr.io/anthropics/devcontainer-features/claude-code:1": {},
+    "./features/tmux": {},
     "./features/ccusage": {
       "version": "latest",
       "shells": "both",
@@ -61,6 +63,7 @@
     "./features/tree-sitter": {},
     "./features/lsp-servers": {},
     "./features/agent-browser": {},
+    "./features/biome": {},
     "./features/notify-hook": {
       "enableBell": true,
       "enableOsc": true
@@ -82,13 +85,15 @@
         }
       },
       "extensions": [
-        "wenbopan.vscode-terminal-osc-notifier"
+        "wenbopan.vscode-terminal-osc-notifier",
+        "GitHub.vscode-github-actions",
+        "fabiospampinato.vscode-todo-plus"
       ]
     }
   },
 
   "runArgs": [
-    "--memory=3g",
-    "--memory-swap=3g"
+    "--memory=4g",
+    "--memory-swap=8g"
   ]
 }

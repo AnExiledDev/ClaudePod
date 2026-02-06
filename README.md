@@ -152,6 +152,8 @@ GitHub CLI credentials are automatically persisted across container rebuilds. Th
 | `git` | Version control |
 | `jq` | JSON processor |
 | `curl` | HTTP client |
+| `tmux` | Terminal multiplexer for Agent Teams split-pane sessions |
+| `biome` | Fast JS/TS/JSON/CSS formatter |
 | `agent-browser` | Headless browser automation for AI agents |
 
 ### Code Intelligence
@@ -214,9 +216,9 @@ Edit `.devcontainer/.env` to customize behavior:
 Default settings are in `.devcontainer/config/settings.json`. These are copied to `/workspaces/.claude/settings.json` on first run.
 
 Key defaults:
-- **Model**: Claude Opus 4.5
+- **Model**: Claude Opus 4-6
 - **Default mode**: Plan (prompts before executing)
-- **Max output tokens**: 64,000
+- **Max output tokens**: 128,000
 
 ### System Prompt
 
@@ -235,6 +237,8 @@ CodeForge includes several custom devcontainer features:
 | `tree-sitter` | Parser with JS/TS/Python grammars |
 | `lsp-servers` | Pyright and TypeScript language servers |
 | `agent-browser` | Browser automation with accessibility snapshots and screenshots |
+| `tmux` | Terminal multiplexer with Catppuccin theme for Agent Teams |
+| `biome` | Fast JS/TS/JSON/CSS formatter (global install) |
 
 ## Essential Gotchas
 

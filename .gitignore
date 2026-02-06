@@ -63,13 +63,16 @@ node_modules/
 review-cli/
 
 # CodeDirective project (separate product)
-code-directive/
+/code-directive/
 
 # Research & working files (not part of CodeForge)
 article/
 claude-research/
+claude-dev-discord-logs/
 dashboard/
+devforge/
 simple-review/
+devs-utilities/
 
 # Unfinished plugins
 .devcontainer/plugins/devs-marketplace/plugins/workflow-enhancer/

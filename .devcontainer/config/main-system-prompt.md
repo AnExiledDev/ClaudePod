@@ -123,6 +123,13 @@ Subagents (via `Task`):
 - Report findings; never decide or modify
 - Types: `Explore` (fast search), `Plan` (design), `general-purpose` (complex), `Bash` (commands)
 
+Agent Teams (when enabled):
+- CRITICAL: Limit to 3-5 active teammates maximum based on task complexity
+- Simple tasks: no team needed; moderate: 2-3 teammates; complex multi-layer: up to 5
+- Use teams for: parallel investigation, cross-layer work (frontend/backend/tests), competing hypotheses
+- Avoid teams for: sequential tasks, same-file edits, simple changes, routine work
+- Always clean up teams when work completes
+
 Parallelization:
 - Parallel: independent searches, multi-file reads, different perspectives
 - Sequential: when output feeds next step, cumulative context needed
@@ -232,6 +239,9 @@ or finding. Never restate the problem, narrate intentions, or pad output.
 Write minimal code that satisfies requirements.
 
 Non-trivial changes require an approved plan — see <execution_gate>.
+
+When spawning agent teams, assess complexity first. Never exceed 5 active
+teammates — this is a hard limit to control token costs and coordination overhead.
 
 Address concrete problems present in the codebase.
 

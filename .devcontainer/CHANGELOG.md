@@ -1,5 +1,55 @@
 # CodeForge Devcontainer Changelog
 
+## [v1.5.0] - 2026-02-06
+
+### Added
+
+#### Agent Teams (Experimental)
+- **Claude Code Agent Teams**: Enabled via `CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS: "1"` and `teammateMode: "auto"`
+- **System prompt guidance**: Agent Teams section with 3–5 active teammate limit and usage heuristics
+- **Task tracking**: `CLAUDE_CODE_ENABLE_TASKS: "true"` for structured task management
+- **Effort level**: `CLAUDE_CODE_EFFORT_LEVEL: "high"`
+
+#### Features
+- **tmux feature**: Split-pane terminal multiplexer for Agent Teams
+  - Pre-configured Catppuccin color palette, mouse support, 10,000-line scrollback
+  - Creates `claude-teams` session on container start
+- **Biome feature**: Fast JS/TS/JSON/CSS formatter via global `@biomejs/biome` install
+- **External terminal connectors**: Bash (`.sh`) and PowerShell (`.ps1`) scripts to connect host terminals to devcontainer tmux sessions
+
+#### Plugins
+- **code-directive plugin**: Replaces `codedirective-skills` with expanded hook infrastructure
+  - **New skill**: `debugging` — Log forensics, Docker log analysis, error pattern recognition
+  - **Hooks**: `skill-suggester.py` (UserPromptSubmit, SubagentStart), `syntax-validator.py` + `collect-edited-files.py` (PostToolUse)
+  - All 10 existing skills migrated from `codedirective-skills`
+
+#### VS Code Extensions
+- `GitHub.vscode-github-actions` — GitHub Actions workflow support
+- `fabiospampinato.vscode-todo-plus` — Todo+ task management
+
+### Changed
+
+- **Default model**: Claude Opus 4-5 → **Claude Opus 4-6** (frontier)
+- **Max output tokens**: 64,000 → **128,000**
+- **Container memory**: 3GB → **4GB** (`--memory-swap` raised to 8GB)
+- **Auto-formatter**: Switched from PostToolUse (`format-file.py`) to Stop hook (`format-on-stop.py`)
+  - Added Biome support for JS/TS/CSS alongside existing Black and gofmt
+  - Batch-formats all edited files when Claude stops instead of formatting on every edit
+- **Auto-linter**: Switched from PostToolUse to Stop hook
+- **Agent-browser**: Optimized to install only Chromium (previously installed all Playwright browsers)
+
+### Removed
+
+- **codedirective-skills plugin**: Replaced by `code-directive` (all skills preserved)
+- **format-file.py**: Replaced by `format-on-stop.py`
+- **`CLAUDE_CODE_SUBAGENT_MODEL`**: Environment variable removed (no longer needed)
+
+### Gitignore
+
+- Added `claude-dev-discord-logs/`, `devforge/`
+
+---
+
 ## [v1.4.0] - 2026-02-01
 
 ### Breaking
