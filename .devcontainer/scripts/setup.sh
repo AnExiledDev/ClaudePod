@@ -21,8 +21,9 @@ fi
 : "${SETUP_ALIASES:=true}"
 : "${OVERWRITE_CONFIG:=false}"
 : "${SETUP_PLUGINS:=true}"
+: "${SETUP_UPDATE_CLAUDE:=true}"
 
-export CLAUDE_CONFIG_DIR CONFIG_SOURCE_DIR SETUP_CONFIG SETUP_ALIASES OVERWRITE_CONFIG SETUP_PLUGINS
+export CLAUDE_CONFIG_DIR CONFIG_SOURCE_DIR SETUP_CONFIG SETUP_ALIASES OVERWRITE_CONFIG SETUP_PLUGINS SETUP_UPDATE_CLAUDE
 
 
 echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
@@ -52,6 +53,17 @@ run_script "$SCRIPT_DIR/setup-config.sh" "$SETUP_CONFIG"
 run_script "$SCRIPT_DIR/setup-aliases.sh" "$SETUP_ALIASES"
 run_script "$SCRIPT_DIR/setup-plugins.sh" "$SETUP_PLUGINS"
 run_script "$SCRIPT_DIR/setup-irie-claude.sh" "true"
+
+# Non-blocking: check for Claude Code updates in background
+if [ "$SETUP_UPDATE_CLAUDE" = "true" ]; then
+    if [ -f "$SCRIPT_DIR/setup-update-claude.sh" ]; then
+        echo "Running setup-update-claude (background)..."
+        bash "$SCRIPT_DIR/setup-update-claude.sh" &
+        disown
+    fi
+else
+    echo "Skipping setup-update-claude (disabled)"
+fi
 
 echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
 echo "  Setup Complete"

@@ -16,6 +16,10 @@
   - Creates `claude-teams` session on container start
 - **Biome feature**: Fast JS/TS/JSON/CSS formatter via global `@biomejs/biome` install
 - **External terminal connectors**: Bash (`.sh`) and PowerShell (`.ps1`) scripts to connect host terminals to devcontainer tmux sessions
+- **Claude Code auto-update**: `setup-update-claude.sh` checks for newer Claude Code native binary on every container start
+  - Runs non-blocking in background via `setup.sh`
+  - Downloads from GCS, verifies SHA256 checksum, atomic binary replacement
+  - Controlled by `SETUP_UPDATE_CLAUDE` env var in `.env` (default: `true`)
 
 #### Plugins
 - **code-directive plugin**: Replaces `codedirective-skills` with expanded hook infrastructure
@@ -32,6 +36,7 @@
 - **Default model**: Claude Opus 4-5 → **Claude Opus 4-6** (frontier)
 - **Max output tokens**: 64,000 → **128,000**
 - **Container memory**: 3GB → **4GB** (`--memory-swap` raised to 8GB)
+- **External terminal connectors**: Now run as `vscode` user and auto-launch `cc` on new tmux sessions
 - **Auto-formatter**: Switched from PostToolUse (`format-file.py`) to Stop hook (`format-on-stop.py`)
   - Added Biome support for JS/TS/CSS alongside existing Black and gofmt
   - Batch-formats all edited files when Claude stops instead of formatting on every edit

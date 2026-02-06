@@ -72,6 +72,15 @@ Write-Host ""
 Write-Host "======================================"
 Write-Host ""
 
-# Connect to container with tmux
-# -A attaches to existing session or creates new one
-docker exec -it $CONTAINER_ID tmux new-session -A -s $TMUX_SESSION
+# Connect to container with tmux as vscode user (where aliases are defined)
+# If session exists, reattach. Otherwise create in /workspaces and auto-run cc.
+docker exec -it --user vscode $CONTAINER_ID bash -c "
+  if tmux has-session -t '$TMUX_SESSION' 2>/dev/null; then
+    tmux attach-session -t '$TMUX_SESSION'
+  else
+    tmux new-session -d -s '$TMUX_SESSION' -c /workspaces
+    sleep 0.5
+    tmux send-keys -t '$TMUX_SESSION' 'cc' Enter
+    tmux attach-session -t '$TMUX_SESSION'
+  fi
+"
