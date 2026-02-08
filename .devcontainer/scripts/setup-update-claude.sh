@@ -5,10 +5,13 @@
 
 echo "[update-claude] Checking for Claude Code updates..."
 
+# === TMPDIR ===
+_TMPDIR="${TMPDIR:-/tmp}"
+
 # === CLEANUP TRAP ===
 cleanup() {
-    rm -f /tmp/claude-update 2>/dev/null || true
-    rm -f /tmp/claude-update-manifest.json 2>/dev/null || true
+    rm -f "${_TMPDIR}/claude-update" 2>/dev/null || true
+    rm -f "${_TMPDIR}/claude-update-manifest.json" 2>/dev/null || true
 }
 trap cleanup EXIT
 
@@ -81,13 +84,13 @@ echo "[update-claude] Platform: ${PLATFORM}"
 # === DOWNLOAD MANIFEST ===
 MANIFEST_URL="${BASE_URL}/${LATEST_VERSION}/manifest.json"
 
-if ! curl -fsSL "${MANIFEST_URL}" -o /tmp/claude-update-manifest.json 2>/dev/null; then
+if ! curl -fsSL "${MANIFEST_URL}" -o ${_TMPDIR}/claude-update-manifest.json 2>/dev/null; then
     echo "[update-claude] WARNING: Failed to download manifest, skipping"
     exit 0
 fi
 
 # === EXTRACT AND VERIFY CHECKSUM ===
-EXPECTED_CHECKSUM=$(jq -r ".platforms.\"${PLATFORM}\".checksum" /tmp/claude-update-manifest.json)
+EXPECTED_CHECKSUM=$(jq -r ".platforms.\"${PLATFORM}\".checksum" ${_TMPDIR}/claude-update-manifest.json)
 if [ -z "${EXPECTED_CHECKSUM}" ] || [ "${EXPECTED_CHECKSUM}" = "null" ]; then
     echo "[update-claude] WARNING: Platform ${PLATFORM} not found in manifest, skipping"
     exit 0
@@ -96,13 +99,13 @@ fi
 # === DOWNLOAD BINARY ===
 BINARY_URL="${BASE_URL}/${LATEST_VERSION}/${PLATFORM}/claude"
 
-if ! curl -fsSL "${BINARY_URL}" -o /tmp/claude-update 2>/dev/null; then
+if ! curl -fsSL "${BINARY_URL}" -o ${_TMPDIR}/claude-update 2>/dev/null; then
     echo "[update-claude] WARNING: Failed to download binary, skipping"
     exit 0
 fi
 
 # === VERIFY CHECKSUM ===
-ACTUAL_CHECKSUM=$(sha256sum /tmp/claude-update | cut -d' ' -f1)
+ACTUAL_CHECKSUM=$(sha256sum ${_TMPDIR}/claude-update | cut -d' ' -f1)
 
 if [ "${ACTUAL_CHECKSUM}" != "${EXPECTED_CHECKSUM}" ]; then
     echo "[update-claude] WARNING: Checksum verification failed, skipping"
@@ -112,8 +115,8 @@ if [ "${ACTUAL_CHECKSUM}" != "${EXPECTED_CHECKSUM}" ]; then
 fi
 
 # === INSTALL (atomic replace) ===
-chmod +x /tmp/claude-update
-if ! sudo mv /tmp/claude-update /usr/local/bin/claude; then
+chmod +x ${_TMPDIR}/claude-update
+if ! sudo mv ${_TMPDIR}/claude-update /usr/local/bin/claude; then
     echo "[update-claude] WARNING: Failed to install update (sudo mv failed), skipping"
     exit 0
 fi

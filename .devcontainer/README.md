@@ -143,7 +143,8 @@ GitHub CLI credentials are automatically persisted across container rebuilds. Th
 | `claude` | Claude Code CLI |
 | `cc` | Wrapper with auto-configuration |
 | `ccusage` | Token usage analyzer |
-| `ccstatusline` | Status line for sessions |
+| `ccburn` | Visual token burn rate tracker with pace indicators |
+| `ccstatusline` | 6-line powerline status display (v1.1.0) |
 | `claude-monitor` | Real-time usage tracking |
 
 ## Using Claude Code
@@ -188,7 +189,24 @@ Default settings are in `.devcontainer/config/settings.json`. These are copied t
 Key defaults:
 - **Model**: Claude Opus 4-6
 - **Default mode**: Plan (prompts before executing)
-- **Max output tokens**: 128,000
+- **Max output tokens**: 64,000
+
+### Keybindings
+
+Default keybindings are in `.devcontainer/config/keybindings.json` (empty by default — Claude Code defaults apply). Customize by adding entries to the `bindings` array.
+
+**VS Code Terminal Passthrough**: `Ctrl+P` and `Ctrl+F` are configured to pass through to the terminal (via `terminal.integrated.commandsToSkipShell`) so Claude Code receives them. Other VS Code shortcuts that conflict with Claude Code:
+
+| Shortcut | VS Code Action | Claude Code Action |
+|----------|---------------|-------------------|
+| `Ctrl+G` | Go to Line | `chat:externalEditor` |
+| `Ctrl+S` | Save File | `chat:stash` |
+| `Ctrl+T` | Open Symbol | `app:toggleTodos` |
+| `Ctrl+O` | Open File | `app:toggleTranscript` |
+| `Ctrl+B` | Toggle Sidebar | `task:background` |
+| `Ctrl+R` | Open Recent | `history:search` |
+
+For conflicting shortcuts, use Meta (Alt) variants or add custom keybindings.
 
 ### System Prompt
 
@@ -200,14 +218,57 @@ CodeForge includes several custom devcontainer features:
 
 | Feature | Description |
 |---------|-------------|
+| `tmux` | Terminal multiplexer with Catppuccin theme for Agent Teams |
+| `agent-browser` | Headless browser automation for AI agents |
 | `claude-monitor` | Real-time token usage monitoring with ML predictions |
 | `ccusage` | Usage analytics CLI |
-| `ccstatusline` | Compact powerline status display |
+| `ccburn` | Visual token burn rate tracker with pace indicators |
+| `ccstatusline` | 6-line powerline status display (v1.1.0) |
 | `ast-grep` | Structural code search using AST patterns |
 | `tree-sitter` | Parser with JS/TS/Python grammars |
 | `lsp-servers` | Pyright and TypeScript language servers |
-| `tmux` | Terminal multiplexer with Catppuccin theme for Agent Teams |
 | `biome` | Fast JS/TS/JSON/CSS formatter (global install) |
+| `notify-hook` | Desktop notifications on Claude completion |
+| `mcp-qdrant` | Qdrant vector database MCP server (optional) |
+| `mcp-reasoner` | Enhanced AI reasoning MCP server (optional) |
+
+## Agents & Skills
+
+The `code-directive` plugin includes specialized agent definitions and coding reference skills.
+
+### Custom Agents (17)
+
+Agent definitions in `plugins/devs-marketplace/plugins/code-directive/agents/` provide enhanced behavior when spawned via the `Task` tool. The `redirect-builtin-agents.py` hook transparently swaps built-in agent types to these custom agents.
+
+| Agent | Purpose |
+|-------|---------|
+| `architect` | System design and implementation planning |
+| `bash-exec` | Command execution specialist |
+| `claude-guide` | Claude Code feature guidance |
+| `debug-logs` | Log analysis and error diagnosis |
+| `dependency-analyst` | Dependency analysis and upgrades |
+| `doc-writer` | Documentation authoring |
+| `explorer` | Fast codebase search and navigation |
+| `generalist` | General-purpose multi-step tasks |
+| `git-archaeologist` | Git history forensics |
+| `migrator` | Code migration and upgrades |
+| `perf-profiler` | Performance profiling |
+| `refactorer` | Code refactoring with regression checks |
+| `researcher` | Research and information gathering |
+| `security-auditor` | Security vulnerability analysis |
+| `spec-writer` | Specification and requirements authoring |
+| `statusline-config` | ccstatusline configuration |
+| `test-writer` | Test authoring with pass verification |
+
+### Skills (16)
+
+Skills in `plugins/devs-marketplace/plugins/code-directive/skills/` provide domain-specific coding references:
+
+`claude-agent-sdk` · `claude-code-headless` · `debugging` · `docker` · `docker-py` · `fastapi` · `git-forensics` · `performance-profiling` · `pydantic-ai` · `refactoring-patterns` · `security-checklist` · `skill-building` · `specification-writing` · `sqlite` · `svelte5` · `testing`
+
+## Project Manager
+
+The `setup-projects.sh` script auto-detects projects under `/workspaces/` and maintains a `projects.json` file for the [Project Manager](https://marketplace.visualstudio.com/items?itemName=alefragnani.project-manager) VS Code extension. It watches for new projects via `inotifywait` and updates the project list automatically.
 
 ## Essential Gotchas
 

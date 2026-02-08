@@ -1,5 +1,61 @@
 # CodeForge Devcontainer Changelog
 
+## [v1.7.0] - 2026-02-08
+
+### Added
+
+- **ccburn feature** — new devcontainer feature for visual token burn rate tracking with shell aliases and statusline wrapper
+- **Session resume widget** — ccstatusline displays copyable `cc --resume {sessionId}` command on line 5
+- **Burn rate widget** — ccstatusline line 6 shows live ccburn compact output with pace indicators (session/weekly/sonnet limits)
+- **17 custom agent definitions** — code-directive plugin now includes specialized agents: architect, bash-exec, claude-guide, debug-logs, dependency-analyst, doc-writer, explorer, generalist, git-archaeologist, migrator, perf-profiler, refactorer, researcher, security-auditor, spec-writer, statusline-config, test-writer
+- **6 new skills** — claude-agent-sdk, git-forensics, performance-profiling, refactoring-patterns, security-checklist, specification-writing
+- **Agent redirect hook** — `redirect-builtin-agents.py` (PreToolUse/Task) transparently swaps built-in agent types (Explore→explorer, Plan→architect, etc.) to enhanced custom agents
+- **Readonly bash guard** — `guard-readonly-bash.py` blocks write operations for read-only agents
+- **Regression test hooks** — `verify-no-regression.py` (PostToolUse for refactorer) and `verify-tests-pass.py` (Stop for test-writer)
+- **REVIEW-RUBRIC.md** — quality standards document for agent/skill development
+- **Keybindings configuration** — new `config/keybindings.json` with schema support
+- **VS Code terminal passthrough** — `Ctrl+P` and `Ctrl+F` pass through to Claude Code via `terminal.integrated.commandsToSkipShell`
+- **claude-agent-sdk skill** — new code-directive skill for Claude Agent SDK TypeScript integration
+- **OVERWRITE_CONFIG documentation** — documented ephemeral settings behavior
+- **Project Manager integration** — `setup-projects.sh` auto-detects projects under `/workspaces/`, watches for changes via inotifywait, maintains `projects.json`
+- **Claude config symlink** — `setup-symlink-claude.sh` symlinks `~/.claude` → `$CLAUDE_CONFIG_DIR` for third-party tool compatibility
+- **Project Manager VS Code extension** — `alefragnani.project-manager` added to devcontainer
+
+### Changed
+
+- **ccstatusline layout** — expanded from 3→6 lines (13→16 widgets), reorganized into logical groups (core metrics, tokens, git, session, totals, burn rate)
+- **ccstatusline version** — bumped from 1.0.0 to 1.1.0
+- **Plugin declarations centralized** — all 9 marketplace plugins declared in `enabledPlugins` in `config/settings.json`
+- **setup-plugins.sh cache sync** — re-added plugin install loop to sync cache from source on every container start; added `.env` fallback so `PLUGIN_BLACKLIST` works on standalone invocation
+- **Feature-level config synced** — `features/claude-code/config/settings.json` mirrors main config (model → `claude-opus-4-6`, `MAX_THINKING_TOKENS` → `63999`, `cleanupPeriodDays` → `60`, all env vars)
+- **8 new env vars** — `CLAUDE_CODE_MAX_TOOL_USE_CONCURRENCY`, `CLAUDE_CODE_MAX_RETRIES`, `BASH_MAX_OUTPUT_LENGTH`, `TASK_MAX_OUTPUT_LENGTH`, `CLAUDE_CODE_PLAN_MODE_INTERVIEW_PHASE`, `CLAUDE_CODE_PLAN_V2_AGENT_COUNT`, `CLAUDE_CODE_PLAN_MODE_REQUIRED`, `CLAUDE_CODE_FORCE_GLOBAL_CACHE`
+- **setup-config.sh** — added `chown` for correct ownership; added keybindings.json to copy pipeline
+- **setup-aliases.sh** — added idempotency guard
+- **TMPDIR consistency** — `setup-update-claude.sh` and `ccstatusline/install.sh` use `${TMPDIR:-/tmp}`
+- **installsAfter references** — mcp-qdrant and mcp-reasoner updated from `./features/claude-code` to `ghcr.io/anthropics/devcontainer-features/claude-code:1`
+- **code-directive hooks.json** — added PreToolUse/Task hook for agent redirection
+- **Auto-linter timeout** — pyright reduced from 55s to 10s
+- **Auto-formatter tool paths** — resolved via `which` first
+- **Protected-files-guard regex** — tightened `id_rsa` pattern
+- **Syntax-validator JSONC regex** — handles URLs containing `://`
+- **Skill-suggester keywords** — consolidated claude-agent-sdk phrases; added "compose" to docker
+- **redirect-builtin-agents.py fix** — `updatedInput` now preserves all original tool input fields (Claude Code replaces rather than merges)
+- **System prompt hardened** — added anti-fabrication rule, failure recovery strategy, and silent-violation guard to `execution_discipline` and `rule_precedence`
+
+### Removed
+
+- **setup-irie-claude.sh** — deleted (personal script, no longer invoked)
+- **output-style widget** — removed from ccstatusline (low value)
+
+### Documentation
+
+- **CLAUDE.md** — added keybindings.json, updated plugins list, fixed model name, documented VS Code conflicts, documented OVERWRITE_CONFIG, added agents/skills sections, added new scripts
+- **README.md** — fixed max output tokens, added keybindings section, added agents/skills, added project manager
+- **features/README.md** — full rewrite listing all features
+- **CHANGELOG.md** — squashed v1.6.0 + v1.6.1 into this entry
+
+---
+
 ## [v1.5.8] - 2026-02-06
 
 ### Changed

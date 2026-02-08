@@ -24,26 +24,22 @@ A DevContainer Feature that installs and configures [ccstatusline](https://githu
 
 ## Display Format
 
-### Line 1: Core Metrics
-```
-Model: Opus 4.1 ▶ Ctx: 58.5k ▶ main ▶ (+19, -2) ▶ v1.0.86
-```
+### 6-Line Powerline Layout
 
-- **Model** (maroon bg, white text, bold): Current AI model
-- **Context** (gold bg, black text, bold): Context window size
-- **Git Branch** (blue bg, white text): Active branch
-- **Git Changes** (pink bg, white text): Lines added/removed
-- **Version** (light pink bg, white text): Claude Code version
-
-### Line 2: Location & Cost
 ```
-cwd: .../workspaces/project ▶ Cost: $0.39
+Line 1: Context Length ▶ Context % ▶ Model
+Line 2: Tokens In ▶ Tokens Out ▶ Tokens Cached
+Line 3: Git Branch ▶ Git Changes ▶ Git Worktree
+Line 4: Session Clock ▶ Session Cost ▶ Block Timer
+Line 5: Tokens Total ▶ Version ▶ cc --resume {sessionId}
+Line 6: Session: 🧊 45% (2h14m) | Weekly: 🔥 12% | Sonnet: 🧊 3%
 ```
 
-- **Working Directory** (gold bg, black text): Current directory path
-- **Session Cost** (gold bg, black text, bold): Total session cost in USD
+- **Lines 1-4**: Core session metrics, token tracking, git status, and cost
+- **Line 5**: Totals + copyable session resume command for `cc --resume`
+- **Line 6**: Live burn rate from [ccburn](https://github.com/JuanjoFuchs/ccburn) with pace indicators
 
-All widgets connected with powerline arrows for a seamless, professional appearance.
+All widgets connected with powerline arrows (monokai theme).
 
 ## What This Feature Installs
 
@@ -74,10 +70,11 @@ The feature will validate these are present and exit with an error if missing.
 
 ## Features
 
-- ✅ **Powerline Mode**: Seamless arrow separators between widgets
-- ✅ **Compact Layout**: 2 clean lines with essential metrics
-- ✅ **7 Key Widgets**: Model, context, git status, version, directory, cost
-- ✅ **Vibrant Colors**: High-contrast truecolor (24-bit hex) optimized for dark terminals
+- ✅ **Powerline Mode**: Seamless arrow separators between widgets (monokai theme)
+- ✅ **6-Line Layout**: 16 widgets covering context, tokens, git, cost, session ID, and burn rate
+- ✅ **Session Resume**: Copyable `cc --resume {sessionId}` command via custom-command widget
+- ✅ **Burn Rate Tracking**: Live ccburn compact output showing pace indicators (🧊/🔥/🚨)
+- ✅ **ANSI Colors**: High-contrast colors optimized for dark terminals
 - ✅ **Automatic Integration**: Auto-configures `.claude/settings.json`
 - ✅ **Idempotent**: Safe to run multiple times
 - ✅ **Multi-user**: Automatically detects container user
@@ -151,7 +148,7 @@ Widgets are configured in the `lines` array:
 - `session-clock` - Session elapsed time
 - `session-cost` - Total session cost (USD)
 - `block-timer` - Block execution time
-- `output-style` - Current output style
+- `claude-session-id` - Session ID (raw or with label)
 
 **Context Tracking:**
 - `context-length` - Context window size
@@ -169,11 +166,15 @@ Widgets are configured in the `lines` array:
 - `git-changes` - Lines added/removed
 - `git-worktree` - Git worktree info
 
+**External Metrics (custom-command):**
+- `custom-command` → `/usr/local/bin/ccstatusline-session-resume` - Copyable resume command
+- `custom-command` → `/usr/local/bin/ccburn-statusline` - Burn rate with pace indicators
+
 **Other:**
 - `cwd` - Current working directory
 - `version` - Claude Code version
 - `custom-text` - Static text
-- `custom-command` - Command output
+- `custom-command` - Arbitrary command output (receives Claude Code JSON via stdin)
 
 ### Color Scheme
 

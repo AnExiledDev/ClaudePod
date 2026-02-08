@@ -14,47 +14,50 @@ import sys
 # Patterns that should be protected from modification
 PROTECTED_PATTERNS = [
     # Environment secrets
-    (r'(^|/)\.env$', "Blocked: .env contains secrets - edit manually if needed"),
-    (r'(^|/)\.env\.[^/]+$', "Blocked: .env.* files contain secrets - edit manually if needed"),
-
+    (r"(^|/)\.env$", "Blocked: .env contains secrets - edit manually if needed"),
+    (
+        r"(^|/)\.env\.[^/]+$",
+        "Blocked: .env.* files contain secrets - edit manually if needed",
+    ),
     # Git internals
-    (r'(^|/)\.git/', "Blocked: .git/ directory is managed by git"),
-
+    (r"(^|/)\.git/", "Blocked: .git/ directory is managed by git"),
     # Lock files (should be modified via package manager)
-    (r'(^|/)package-lock\.json$', "Blocked: package-lock.json - use npm install instead"),
-    (r'(^|/)yarn\.lock$', "Blocked: yarn.lock - use yarn install instead"),
-    (r'(^|/)pnpm-lock\.yaml$', "Blocked: pnpm-lock.yaml - use pnpm install instead"),
-    (r'(^|/)Gemfile\.lock$', "Blocked: Gemfile.lock - use bundle install instead"),
-    (r'(^|/)poetry\.lock$', "Blocked: poetry.lock - use poetry install instead"),
-    (r'(^|/)Cargo\.lock$', "Blocked: Cargo.lock - use cargo build instead"),
-    (r'(^|/)composer\.lock$', "Blocked: composer.lock - use composer install instead"),
-    (r'(^|/)uv\.lock$', "Blocked: uv.lock - use uv sync instead"),
-
+    (
+        r"(^|/)package-lock\.json$",
+        "Blocked: package-lock.json - use npm install instead",
+    ),
+    (r"(^|/)yarn\.lock$", "Blocked: yarn.lock - use yarn install instead"),
+    (r"(^|/)pnpm-lock\.yaml$", "Blocked: pnpm-lock.yaml - use pnpm install instead"),
+    (r"(^|/)Gemfile\.lock$", "Blocked: Gemfile.lock - use bundle install instead"),
+    (r"(^|/)poetry\.lock$", "Blocked: poetry.lock - use poetry install instead"),
+    (r"(^|/)Cargo\.lock$", "Blocked: Cargo.lock - use cargo build instead"),
+    (r"(^|/)composer\.lock$", "Blocked: composer.lock - use composer install instead"),
+    (r"(^|/)uv\.lock$", "Blocked: uv.lock - use uv sync instead"),
     # Certificates and keys
-    (r'\.pem$', "Blocked: .pem files contain sensitive cryptographic material"),
-    (r'\.key$', "Blocked: .key files contain sensitive cryptographic material"),
-    (r'\.crt$', "Blocked: .crt certificate files should not be edited directly"),
-    (r'\.p12$', "Blocked: .p12 files contain sensitive cryptographic material"),
-    (r'\.pfx$', "Blocked: .pfx files contain sensitive cryptographic material"),
-
+    (r"\.pem$", "Blocked: .pem files contain sensitive cryptographic material"),
+    (r"\.key$", "Blocked: .key files contain sensitive cryptographic material"),
+    (r"\.crt$", "Blocked: .crt certificate files should not be edited directly"),
+    (r"\.p12$", "Blocked: .p12 files contain sensitive cryptographic material"),
+    (r"\.pfx$", "Blocked: .pfx files contain sensitive cryptographic material"),
     # Credential files
-    (r'(^|/)credentials\.json$', "Blocked: credentials.json contains secrets"),
-    (r'(^|/)secrets\.yaml$', "Blocked: secrets.yaml contains secrets"),
-    (r'(^|/)secrets\.yml$', "Blocked: secrets.yml contains secrets"),
-    (r'(^|/)secrets\.json$', "Blocked: secrets.json contains secrets"),
-    (r'(^|/)\.secrets$', "Blocked: .secrets file contains secrets"),
-
+    (r"(^|/)credentials\.json$", "Blocked: credentials.json contains secrets"),
+    (r"(^|/)secrets\.yaml$", "Blocked: secrets.yaml contains secrets"),
+    (r"(^|/)secrets\.yml$", "Blocked: secrets.yml contains secrets"),
+    (r"(^|/)secrets\.json$", "Blocked: secrets.json contains secrets"),
+    (r"(^|/)\.secrets$", "Blocked: .secrets file contains secrets"),
     # Auth directories and files
-    (r'(^|/)\.ssh/', "Blocked: .ssh/ contains sensitive authentication data"),
-    (r'(^|/)\.aws/', "Blocked: .aws/ contains AWS credentials"),
-    (r'(^|/)\.netrc$', "Blocked: .netrc contains authentication credentials"),
-    (r'(^|/)\.npmrc$', "Blocked: .npmrc may contain auth tokens - edit manually if needed"),
-    (r'(^|/)\.pypirc$', "Blocked: .pypirc contains PyPI credentials"),
-
+    (r"(^|/)\.ssh/", "Blocked: .ssh/ contains sensitive authentication data"),
+    (r"(^|/)\.aws/", "Blocked: .aws/ contains AWS credentials"),
+    (r"(^|/)\.netrc$", "Blocked: .netrc contains authentication credentials"),
+    (
+        r"(^|/)\.npmrc$",
+        "Blocked: .npmrc may contain auth tokens - edit manually if needed",
+    ),
+    (r"(^|/)\.pypirc$", "Blocked: .pypirc contains PyPI credentials"),
     # Other sensitive files
-    (r'(^|/)id_rsa', "Blocked: SSH private key file"),
-    (r'(^|/)id_ed25519', "Blocked: SSH private key file"),
-    (r'(^|/)id_ecdsa', "Blocked: SSH private key file"),
+    (r"(^|/|-)id_rsa($|\.)", "Blocked: SSH private key file"),
+    (r"(^|/)id_ed25519", "Blocked: SSH private key file"),
+    (r"(^|/)id_ecdsa", "Blocked: SSH private key file"),
 ]
 
 
@@ -65,7 +68,7 @@ def check_path(file_path: str) -> tuple[bool, str]:
         (is_protected, message)
     """
     # Normalize path for consistent matching
-    normalized = file_path.replace('\\', '/')
+    normalized = file_path.replace("\\", "/")
 
     for pattern, message in PROTECTED_PATTERNS:
         if re.search(pattern, normalized, re.IGNORECASE):
@@ -87,9 +90,7 @@ def main():
 
         if is_protected:
             # Output error message and exit 2 to block
-            print(json.dumps({
-                "error": message
-            }))
+            print(json.dumps({"error": message}))
             sys.exit(2)
 
         # Allow edit to proceed

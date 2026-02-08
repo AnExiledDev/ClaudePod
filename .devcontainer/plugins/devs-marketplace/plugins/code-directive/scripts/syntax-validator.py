@@ -19,11 +19,16 @@ EXTENSIONS = {".json", ".jsonc", ".yaml", ".yml", ".toml"}
 
 
 def strip_jsonc_comments(text: str) -> str:
-    """Remove // and /* */ comments from JSONC text."""
-    # Remove single-line comments (not inside strings)
-    text = re.sub(r"(?<!:)//.*$", "", text, flags=re.MULTILINE)
-    # Remove multi-line comments
+    """Remove // and /* */ comments from JSONC text.
+
+    Handles URLs (https://...) by only stripping // comments that are
+    preceded by whitespace or appear at line start, not those inside strings.
+    """
+    # Remove multi-line comments first
     text = re.sub(r"/\*.*?\*/", "", text, flags=re.DOTALL)
+    # Remove single-line comments: // preceded by start-of-line or whitespace
+    # This avoids stripping :// in URLs
+    text = re.sub(r"(^|[\s,\[\{])//.*$", r"\1", text, flags=re.MULTILINE)
     return text
 
 

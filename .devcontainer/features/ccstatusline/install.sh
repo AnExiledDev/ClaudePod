@@ -3,7 +3,7 @@ set -euo pipefail
 
 # Cleanup on exit
 cleanup() {
-    rm -f /tmp/ccstatusline-*.json 2>/dev/null || true
+    rm -f "${TMPDIR:-/tmp}"/ccstatusline-*.json 2>/dev/null || true
 }
 trap cleanup EXIT
 
@@ -62,29 +62,39 @@ fi
 echo "[ccstatusline] Generating powerline configuration..."
 
 # Generate powerline configuration using jq (ANSI colors - same as module)
+# 6-line layout with session resume command and ccburn burn rate tracking
 CONFIG_JSON=$(jq -n '{
     version: 3,
     lines: [
         [
             {id: "1", type: "context-length", color: "cyan"},
-            {id: "3", type: "git-branch", color: "brightBlack"},
-            {id: "5", type: "tokens-input", color: "magenta"},
-            {id: "7", type: "session-clock", color: "yellow"},
-            {id: "1eafc42e-f222-4090-a463-46de6ba81849", type: "output-style", backgroundColor: "bgBrightBlack"}
-        ],
-        [
             {id: "db519d5a-80a7-4b44-8a9c-2c7d8c0a7176", type: "context-percentage-usable", backgroundColor: "bgRed"},
-            {id: "a529e50e-b9f3-4150-a812-937ab81545e8", type: "git-changes", backgroundColor: "bgBrightBlue"},
-            {id: "ac094d46-3673-4d41-84e3-dc8c5bcf639f", type: "tokens-output", backgroundColor: "bgMagenta"},
-            {id: "90aae111-3d3f-4bb0-8336-230f322cc2e8", type: "block-timer", backgroundColor: "bgYellow"},
             {id: "d904cca6-ade8-41c1-a4f5-ddea30607a5e", type: "model", backgroundColor: "bgMagenta"}
         ],
         [
-            {id: "9bacbdb4-2e01-45de-a0c0-ee6ec30fa3c2", type: "tokens-total", backgroundColor: "bgGreen"},
-            {id: "a9eaae3f-7f91-459c-833a-fbc9f01a09ae", type: "git-worktree", backgroundColor: "bgBrightBlue"},
-            {id: "2ad12147-05fd-45fb-8336-53ba2e7df56c", type: "tokens-cached", backgroundColor: "bgBrightRed"},
+            {id: "5", type: "tokens-input", color: "magenta"},
+            {id: "ac094d46-3673-4d41-84e3-dc8c5bcf639f", type: "tokens-output", backgroundColor: "bgMagenta"},
+            {id: "2ad12147-05fd-45fb-8336-53ba2e7df56c", type: "tokens-cached", backgroundColor: "bgBrightRed"}
+        ],
+        [
+            {id: "3", type: "git-branch", color: "brightBlack"},
+            {id: "a529e50e-b9f3-4150-a812-937ab81545e8", type: "git-changes", backgroundColor: "bgBrightBlue"},
+            {id: "a9eaae3f-7f91-459c-833a-fbc9f01a09ae", type: "git-worktree", backgroundColor: "bgBrightBlue"}
+        ],
+        [
+            {id: "7", type: "session-clock", color: "yellow"},
             {id: "a4fe7f75-2f6c-49c7-88f6-ac7381142c2c", type: "session-cost", backgroundColor: "bgBrightWhite"},
+            {id: "90aae111-3d3f-4bb0-8336-230f322cc2e8", type: "block-timer", backgroundColor: "bgYellow"}
+        ],
+        [
+            {id: "9bacbdb4-2e01-45de-a0c0-ee6ec30fa3c2", type: "tokens-total", backgroundColor: "bgGreen"},
             {id: "2cdff909-8297-44a1-83f9-ad4bf024391e", type: "version", backgroundColor: "bgRed"}
+        ],
+        [
+            {id: "cc-resume-session", type: "custom-command", commandPath: "/usr/local/bin/ccstatusline-session-resume", timeout: 500, preserveColors: false, maxWidth: 50, color: "cyan", backgroundColor: "bgBrightBlack"}
+        ],
+        [
+            {id: "ccburn-compact", type: "custom-command", commandPath: "/usr/local/bin/ccburn-statusline", timeout: 8000, preserveColors: true, maxWidth: 80, color: "green", backgroundColor: "bgBlack"}
         ]
     ],
     flexMode: "full-minus-40",
@@ -95,7 +105,7 @@ CONFIG_JSON=$(jq -n '{
     powerline: {
         enabled: true,
         separators: ["\ue0b0"],
-        separatorInvertBackground: [true],
+        separatorInvertBackground: [false],
         startCaps: ["\ue0b6"],
         endCaps: ["\ue0b4"],
         autoAlign: false,
@@ -145,6 +155,24 @@ TEMPLATE_FILE=/usr/local/share/ccstatusline/settings.template.json
 echo "${CONFIG_JSON}" | jq . > "${TEMPLATE_FILE}"
 chmod 644 "${TEMPLATE_FILE}"
 echo "[ccstatusline] ✓ Template saved to ${TEMPLATE_FILE}"
+
+# Create session resume helper script for custom-command widget
+# Reads Claude Code JSON from stdin, outputs the session ID
+echo "[ccstatusline] Creating session resume helper..."
+cat > /usr/local/bin/ccstatusline-session-resume <<'SESSION_EOF'
+#!/bin/bash
+# Reads Claude Code JSON from stdin, outputs just the session ID
+# Used by ccstatusline custom-command widget on line 6
+SESSION_ID=$(jq -r '.session_id // empty' 2>/dev/null)
+if [ -n "$SESSION_ID" ]; then
+    echo "$SESSION_ID"
+else
+    echo "..."
+fi
+SESSION_EOF
+
+chmod +x /usr/local/bin/ccstatusline-session-resume
+echo "[ccstatusline] ✓ Session resume helper installed at /usr/local/bin/ccstatusline-session-resume"
 
 # Create wrapper script to protect configuration
 echo "[ccstatusline] Creating wrapper script..."
@@ -267,13 +295,17 @@ echo ""
 echo "Configuration:"
 echo "  • Config file: ${CONFIG_FILE}"
 echo "  • User: ${USERNAME}"
-echo "  • Theme: Powerline (3 lines, 13 widgets, ANSI colors)"
+echo "  • Theme: Powerline (7 lines, 16 widgets, ANSI colors)"
 echo "  • Protected by: /usr/local/bin/ccstatusline-wrapper"
 echo ""
 echo "Display:"
-echo "  Line 1: Context | Git Branch | Tokens In | Clock | Output Style"
-echo "  Line 2: Context % | Git Changes | Tokens Out | Block Timer | Model"
-echo "  Line 3: Tokens Total | Git Worktree | Cached | Cost | Version"
+echo "  Line 1: Context Length | Context % | Model"
+echo "  Line 2: Tokens In | Tokens Out | Tokens Cached"
+echo "  Line 3: Git Branch | Git Changes | Git Worktree"
+echo "  Line 4: Session Clock | Session Cost | Block Timer"
+echo "  Line 5: Tokens Total | Version"
+echo "  Line 6: Session ID"
+echo "  Line 7: Burn Rate (ccburn compact)"
 echo ""
 echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
 echo "  Next Steps"

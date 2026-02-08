@@ -24,6 +24,7 @@
     "./features/agent-browser",
     "./features/claude-monitor",
     "./features/ccusage",
+    "./features/ccburn",
     "./features/ccstatusline",
     "./features/ast-grep",
     "./features/tree-sitter",
@@ -54,6 +55,11 @@
     "./features/claude-monitor": {
       "version": "latest",
       "installer": "uv",
+      "username": "automatic"
+    },
+    "./features/ccburn": {
+      "version": "latest",
+      "shells": "both",
       "username": "automatic"
     },
     "./features/ccstatusline": {
@@ -89,14 +95,24 @@
         },
         "terminal.integrated.defaultProfile.linux": "bash",
         "terminal.integrated.enableBell": true,
+        "terminal.integrated.commandsToSkipShell": [
+          "-workbench.action.quickOpen",
+          "-workbench.action.terminal.focusFind"
+        ],
         "remote.extensionKind": {
           "wenbopan.vscode-terminal-osc-notifier": ["ui"]
-        }
+        },
+        "projectManager.git.baseFolders": ["/workspaces"],
+        "projectManager.git.maxDepthRecursion": 1,
+        "projectManager.showProjectNameInStatusBar": true,
+        "projectManager.openInNewWindowWhenClickingInStatusBar": false,
+        "projectManager.projectsLocation": "/workspaces/.config/project-manager"
       },
       "extensions": [
         "wenbopan.vscode-terminal-osc-notifier",
         "GitHub.vscode-github-actions",
-        "fabiospampinato.vscode-todo-plus"
+        "fabiospampinato.vscode-todo-plus",
+        "alefragnani.project-manager"
       ]
     }
   },

@@ -6,8 +6,8 @@ CLAUDE_DIR="${CLAUDE_CONFIG_DIR:?CLAUDE_CONFIG_DIR not set}"
 echo "[setup-aliases] Configuring Claude aliases..."
 
 # Simple alias definitions (not functions — functions don't behave reliably across shell contexts)
-ALIAS_CC='alias cc='"'"'command claude --system-prompt-file .claude/system-prompt.md --permission-mode plan --allow-dangerously-skip-permissions'"'"''
-ALIAS_CLAUDE='alias claude='"'"'command claude --system-prompt-file .claude/system-prompt.md --permission-mode plan --allow-dangerously-skip-permissions'"'"''
+ALIAS_CC='alias cc='"'"'CLAUDE_CODE_ADDITIONAL_DIRECTORIES_CLAUDE_MD=1 command claude --system-prompt-file "$CLAUDE_CONFIG_DIR/system-prompt.md" --permission-mode plan --allow-dangerously-skip-permissions'"'"''
+ALIAS_CLAUDE='alias claude='"'"'CLAUDE_CODE_ADDITIONAL_DIRECTORIES_CLAUDE_MD=1 command claude --system-prompt-file "$CLAUDE_CONFIG_DIR/system-prompt.md" --permission-mode plan --allow-dangerously-skip-permissions'"'"''
 ALIAS_CCRAW='alias ccraw="command claude"'
 
 for rc in ~/.bashrc ~/.zshrc; do
@@ -47,7 +47,12 @@ for rc in ~/.bashrc ~/.zshrc; do
             sed -i '/alias specwright=/d' "$rc"
         fi
 
-        # --- Add environment, auto-tmux, and aliases ---
+        # --- Add environment and aliases (idempotent) ---
+        # Guard: skip if aliases already present from a previous run
+        if grep -q '# Claude Code environment and aliases' "$rc" 2>/dev/null; then
+            echo "[setup-aliases] Aliases already present in $(basename $rc), skipping"
+            continue
+        fi
         echo "" >> "$rc"
         echo "# Claude Code environment and aliases (managed by setup-aliases.sh)" >> "$rc"
         # Export CLAUDE_CONFIG_DIR so it's available in all shells (not just VS Code remoteEnv)
@@ -67,6 +72,6 @@ for rc in ~/.bashrc ~/.zshrc; do
 done
 
 echo "[setup-aliases] Aliases configured:"
-echo "  cc     -> claude with local .claude/system-prompt.md"
-echo "  claude -> claude with local .claude/system-prompt.md"
+echo "  cc     -> claude with \$CLAUDE_CONFIG_DIR/system-prompt.md"
+echo "  claude -> claude with \$CLAUDE_CONFIG_DIR/system-prompt.md"
 echo "  ccraw  -> vanilla claude without any config"

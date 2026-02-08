@@ -28,11 +28,7 @@ def lint_python(file_path: str) -> tuple[bool, str]:
 
     # Check if pyright is available
     try:
-        subprocess.run(
-            ["which", pyright_cmd],
-            capture_output=True,
-            check=True
-        )
+        subprocess.run(["which", pyright_cmd], capture_output=True, check=True)
     except subprocess.CalledProcessError:
         return True, ""  # Pyright not available
 
@@ -41,7 +37,7 @@ def lint_python(file_path: str) -> tuple[bool, str]:
             [pyright_cmd, "--outputjson", file_path],
             capture_output=True,
             text=True,
-            timeout=55
+            timeout=10,
         )
 
         # Parse pyright JSON output
@@ -79,7 +75,10 @@ def lint_python(file_path: str) -> tuple[bool, str]:
         except json.JSONDecodeError:
             # Pyright output not JSON, might be an error
             if result.stderr:
-                return True, f"[Auto-linter] Pyright error: {result.stderr.strip()[:100]}"
+                return (
+                    True,
+                    f"[Auto-linter] Pyright error: {result.stderr.strip()[:100]}",
+                )
             return True, ""
 
     except subprocess.TimeoutExpired:
@@ -120,9 +119,7 @@ def main():
 
         if message:
             # Output context for Claude
-            print(json.dumps({
-                "additionalContext": message
-            }))
+            print(json.dumps({"additionalContext": message}))
 
         sys.exit(0)
 

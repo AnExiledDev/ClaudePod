@@ -15,6 +15,7 @@ copy_file() {
     if [ -f "$CONFIG_DIR/$file" ]; then
         if [ "$OVERWRITE" = "true" ] || [ ! -f "$TARGET_DIR/$file" ]; then
             cp "$CONFIG_DIR/$file" "$TARGET_DIR/$file"
+            chown "$(id -un):$(id -gn)" "$TARGET_DIR/$file" 2>/dev/null || true
             echo "[setup-config] Copied $file"
         else
             echo "[setup-config] $file already exists, skipping"
@@ -23,6 +24,7 @@ copy_file() {
 }
 
 copy_file "settings.json"
+copy_file "keybindings.json"
 copy_file "main-system-prompt.md"
 
 echo "[setup-config] Configuration complete"

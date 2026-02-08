@@ -33,8 +33,21 @@ BIOME_EXTS = {
     ".css",
 }
 
-BLACK_PATH = "/usr/local/py-utils/bin/black"
-GOFMT_PATH = "/usr/local/go/bin/gofmt"
+BLACK_PATH_FALLBACK = "/usr/local/py-utils/bin/black"
+GOFMT_PATH_FALLBACK = "/usr/local/go/bin/gofmt"
+
+
+def _resolve_tool(name: str, fallback: str) -> str | None:
+    """Find tool via PATH first, fall back to hardcoded path."""
+    try:
+        result = subprocess.run(["which", name], capture_output=True, text=True)
+        if result.returncode == 0:
+            return result.stdout.strip()
+    except Exception:
+        pass
+    if os.path.exists(fallback):
+        return fallback
+    return None
 
 
 def find_tool_upward(file_path: str, tool_name: str) -> str | None:
@@ -76,11 +89,12 @@ def find_biome(file_path: str) -> str | None:
 
 def format_python(file_path: str) -> None:
     """Format with Black (quiet mode)."""
-    if not os.path.exists(BLACK_PATH):
+    black = _resolve_tool("black", BLACK_PATH_FALLBACK)
+    if not black:
         return
     try:
         subprocess.run(
-            [BLACK_PATH, "--quiet", file_path],
+            [black, "--quiet", file_path],
             capture_output=True,
             timeout=10,
         )
@@ -90,11 +104,12 @@ def format_python(file_path: str) -> None:
 
 def format_go(file_path: str) -> None:
     """Format with gofmt."""
-    if not os.path.exists(GOFMT_PATH):
+    gofmt = _resolve_tool("gofmt", GOFMT_PATH_FALLBACK)
+    if not gofmt:
         return
     try:
         subprocess.run(
-            [GOFMT_PATH, "-w", file_path],
+            [gofmt, "-w", file_path],
             capture_output=True,
             timeout=10,
         )

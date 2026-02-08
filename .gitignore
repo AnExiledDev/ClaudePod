@@ -73,6 +73,7 @@ dashboard/
 devforge/
 simple-review/
 devs-utilities/
+devs-notes/
 
 # Unfinished plugins
 .devcontainer/plugins/devs-marketplace/plugins/workflow-enhancer/

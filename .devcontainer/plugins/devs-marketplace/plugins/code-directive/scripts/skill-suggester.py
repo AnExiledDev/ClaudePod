@@ -46,12 +46,22 @@ SKILLS = {
             "headless mode",
             "claude -p",
             "stream-json",
-            "agent sdk",
             "claude code headless",
             "run claude in ci",
             "claude in pipeline",
         ],
         "terms": [],
+    },
+    "claude-agent-sdk": {
+        "phrases": [
+            "agent sdk",
+            "claude agent sdk",
+            "build an agent",
+            "create an agent",
+            "canusetool",
+            "sdk permissions",
+        ],
+        "terms": ["claude-agent-sdk", "claude_agent_sdk"],
     },
     "pydantic-ai": {
         "phrases": [
@@ -115,6 +125,7 @@ SKILLS = {
             "dockerfile",
             "docker compose",
             "docker-compose",
+            "compose file",
             "multi-stage build",
             "health check",
             "healthcheck",
@@ -122,7 +133,7 @@ SKILLS = {
             "docker volume",
             "docker image",
         ],
-        "terms": ["dockerfile"],
+        "terms": ["dockerfile", "compose"],
     },
     "skill-building": {
         "phrases": [
@@ -151,6 +162,78 @@ SKILLS = {
             "analyze error",
         ],
         "terms": ["diagnose", "troubleshoot"],
+    },
+    "refactoring-patterns": {
+        "phrases": [
+            "refactor this",
+            "clean up code",
+            "improve code structure",
+            "reduce complexity",
+        ],
+        "terms": [
+            "refactor",
+            "refactoring",
+            "code smell",
+            "extract function",
+            "dead code",
+        ],
+    },
+    "security-checklist": {
+        "phrases": [
+            "security review",
+            "check for vulnerabilities",
+            "audit security",
+            "find security issues",
+        ],
+        "terms": [
+            "security",
+            "vulnerability",
+            "owasp",
+            "injection",
+            "xss",
+            "secrets",
+            "cve",
+        ],
+    },
+    "git-forensics": {
+        "phrases": [
+            "git history",
+            "who changed this",
+            "when did this break",
+            "git blame",
+        ],
+        "terms": ["bisect", "blame", "archaeology", "git log", "pickaxe", "reflog"],
+    },
+    "specification-writing": {
+        "phrases": [
+            "write a spec",
+            "define requirements",
+            "acceptance criteria",
+            "user stories",
+        ],
+        "terms": [
+            "specification",
+            "requirements",
+            "ears",
+            "gherkin",
+            "given when then",
+        ],
+    },
+    "performance-profiling": {
+        "phrases": [
+            "profile performance",
+            "find bottleneck",
+            "benchmark this",
+            "why is this slow",
+        ],
+        "terms": [
+            "profiling",
+            "benchmark",
+            "flamegraph",
+            "bottleneck",
+            "latency",
+            "throughput",
+        ],
     },
 }
 

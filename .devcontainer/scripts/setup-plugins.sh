@@ -1,5 +1,21 @@
 #!/bin/bash
-# Install plugins: official Anthropic + local devs-marketplace
+# Install plugins: official Anthropic + local devs-marketplace registration
+#
+# Individual marketplace plugins are enabled via enabledPlugins in settings.json.
+# This script only handles:
+# 1. Official Anthropic plugin installs (not managed by enabledPlugins)
+# 2. Local marketplace registration (so Claude Code can discover devs-marketplace)
+
+# Source .env for PLUGIN_BLACKLIST if not already set (e.g., standalone invocation)
+if [ -z "${PLUGIN_BLACKLIST+x}" ]; then
+    SCRIPT_DIR_INIT="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+    ENV_FILE="${SCRIPT_DIR_INIT}/../.env"
+    if [ -f "$ENV_FILE" ]; then
+        set -a
+        source "$ENV_FILE"
+        set +a
+    fi
+fi
 
 echo "[setup-plugins] Installing plugins..."
 
@@ -18,33 +34,13 @@ for plugin in "${OFFICIAL_PLUGINS[@]}"; do
     fi
 done
 
-# --- Local Marketplace Plugins ---
+# --- Local Marketplace Registration ---
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 MARKETPLACE_PATH="${SCRIPT_DIR}/../plugins/devs-marketplace"
 
-# Load PLUGIN_BLACKLIST from .env if not already set in environment
-ENV_FILE="${SCRIPT_DIR}/../.env"
-if [ -z "${PLUGIN_BLACKLIST+x}" ] && [ -f "$ENV_FILE" ]; then
-    PLUGIN_BLACKLIST=$(grep -E '^PLUGIN_BLACKLIST=' "$ENV_FILE" | cut -d'=' -f2- | tr -d '"')
-fi
-
-# Parse blacklist into array
-IFS=',' read -ra BLACKLIST <<< "${PLUGIN_BLACKLIST:-}"
-
-# Helper function to check if plugin is blacklisted
-is_blacklisted() {
-    local plugin_name="$1"
-    for blocked in "${BLACKLIST[@]}"; do
-        # Trim whitespace and compare
-        blocked="${blocked// /}"
-        if [ "$plugin_name" = "$blocked" ]; then
-            return 0
-        fi
-    done
-    return 1
-}
-
 # Add local marketplace (if not already added)
+# This is still needed so Claude Code can discover devs-marketplace plugins
+# listed in enabledPlugins in settings.json
 if ! claude plugin marketplace list 2>/dev/null | grep -q "devs-marketplace"; then
     echo "[setup-plugins] Adding devs-marketplace..."
     claude plugin marketplace add "$MARKETPLACE_PATH" 2>/dev/null || {
@@ -52,29 +48,25 @@ if ! claude plugin marketplace list 2>/dev/null | grep -q "devs-marketplace"; th
     }
 fi
 
-# Install ALL plugins from marketplace.json (dynamic discovery)
-MARKETPLACE_JSON="$MARKETPLACE_PATH/.claude-plugin/marketplace.json"
-if [ -f "$MARKETPLACE_JSON" ]; then
-    PLUGINS=$(jq -r '.plugins[].name' "$MARKETPLACE_JSON" 2>/dev/null)
+# --- Install/Update devs-marketplace plugins (syncs cache from source) ---
+# enabledPlugins in settings.json controls enabled/disabled state, but plugins
+# must be explicitly installed to populate the cache. This loop ensures the
+# cache stays in sync with the source directory on every container start.
+if [ -d "$MARKETPLACE_PATH/plugins" ]; then
+    for plugin_dir in "$MARKETPLACE_PATH"/plugins/*/; do
+        plugin_name=$(basename "$plugin_dir")
 
-    if [ -z "$PLUGINS" ]; then
-        echo "[setup-plugins] WARNING: No plugins found in marketplace.json"
-    else
-        for plugin in $PLUGINS; do
-            if is_blacklisted "$plugin"; then
-                echo "[setup-plugins] Skipping $plugin (blacklisted)"
-                continue
-            fi
-            echo "[setup-plugins] Installing $plugin from devs-marketplace..."
-            if claude plugin install "${plugin}@devs-marketplace" 2>/dev/null; then
-                echo "[setup-plugins] Installed: $plugin"
-            else
-                echo "[setup-plugins] WARNING: Failed to install $plugin (may already be installed)"
-            fi
-        done
-    fi
-else
-    echo "[setup-plugins] WARNING: marketplace.json not found at $MARKETPLACE_JSON"
+        # Skip blacklisted plugins
+        if echo ",$PLUGIN_BLACKLIST," | grep -q ",$plugin_name,"; then
+            echo "[setup-plugins] Skipping $plugin_name (blacklisted)"
+            continue
+        fi
+
+        echo "[setup-plugins] Installing $plugin_name@devs-marketplace..."
+        claude plugin install "$plugin_name@devs-marketplace" 2>/dev/null || {
+            echo "[setup-plugins] Warning: Failed to install $plugin_name"
+        }
+    done
 fi
 
 echo "[setup-plugins] Plugin installation complete"
